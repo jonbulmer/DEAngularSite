@@ -1,0 +1,134 @@
+[
+    {
+        "Id": 1,
+        "companyName": "Stockton GP" ,
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 2,
+        "companyName": "Stockton Cards Club",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 3,
+        "companyName": "Middlesbrough Credit Union",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 4,
+        "companyName": "Billingham Call Centre",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 5,
+        "companyName": "Thornaby Car Show Room",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 6,
+        "companyName": "Yarm Taxis",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 7,
+        "companyName": "Hartlepool Supermarket",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 8,
+        "companyName": "Sunderland College",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 9,
+        "companyName": "Darlington Cricket Club",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 10,
+        "companyName": "Nothallerton Restaurant",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 11,
+        "companyName": "Guisborough Pizza Deliveries",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 12,
+        "companyName": "Seaham Welders",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 13,
+        "companyName": "Gateshead Bus Company",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 14,
+        "companyName": "Thirsk Farm",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 15,
+        "companyName": "Durham Car Hire",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 16,
+        "companyName": "Conset Retail Park",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 17,
+        "companyName": "Scarborough Haulage",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 18,
+        "companyName": "Bishop Ackland Frezers ",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 19,
+        "companyName": "York Food Processers",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 20,
+        "companyName": "Newton Acliffe Arena",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 21,
+        "companyName": "North East Road Mainantainance",
+        "companyDescription": "",
+        "status": "Mock"
+    },
+    {
+        "Id": 22,
+        "companyName": "Regional Airport",
+        "companyDescription": "",
+        "status": "Mock"
+    }
+]

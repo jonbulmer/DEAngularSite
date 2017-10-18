@@ -1,0 +1,51 @@
+
+<navi-bar></navi-bar>
+<logo-bar></logo-bar> 
+<div class = 'panel callout'>
+  {{pageTitle}}
+</div>
+
+ <div class='panel'>
+   <div class='row'>
+   <div class='large-2 columns'> Filter by:</div>
+   <div>
+ </div>
+ <div class='large-10 columns' >      
+    <input type='text' [(ngModel)] ='listFilter' />
+ </div> 
+   <div class='row panel' *ngIf='listFilter'>
+      <div class='large-12 columns' >
+     <h3>Filtered by: {{listFilter}} </h3> 
+     </div>
+   </div>
+   <div *ngIf='errorMessage'> {{errorMessage}} </div>
+   <div class= ' row panel'>
+    <table class='table'>
+     <thead>
+      <tr>
+       <th>Company</th>
+       <th>Description</th>
+       <th>Status</th>
+      </tr> 
+     </thead>
+     <tbody>
+      <tr *ngFor='let company of companies'>
+       <td><a href=''>r {{ company.companyName }}</a><td>
+       <td>{{ company.companyDescription }}</td>
+       <td>{{ company.status }}</td>   
+      </tr> 
+     </tbody>
+    </table> 
+   </div>
+  </div>
+</div>
+<div>
+  <div class='panel card large-3 '>
+  <div class='row'>
+    Company
+  </div>
+  <div class='row '>
+   comment
+  </div>
+  </div>
+</div>  
