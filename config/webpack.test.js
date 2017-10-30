@@ -1,3 +1,4 @@
+var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var helpers = require('./helpers');
 
@@ -33,6 +34,16 @@ module.exports = {
                 loader: 'raw-loader'
             }
         ]
-    }
+    },
+
+    plugins: [
+        
+            new webpack.ContextReplacementPlugin(
+              // The (\\|\/) piece accounts for path separators in *nix and Windows
+              /angular(\\|\/)core(\\|\/)@angular/,
+              helpers.root('./src'), // location of your src
+              {} // a map of your routes
+            )
+        ]
 
 }
