@@ -1,1 +1,28 @@
-<router-outlet></router-outlet>
+<div class="container" style="margin-top: 15px;">
+    <!-- Static navbar -->
+       <nav class="navbar navbar-default">
+           <div class="container-fluid">
+               <div class="navbar-header">
+                   <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+                       <span class="sr-only">Toggle navigation</span>
+                       
+                   </button>
+                   
+               </div>
+               <div class="navbar-collapse collapse" id="navbar">
+                   <ul class="nav navbar-nav">
+                       <li><a >DataEventRecords</a></li>
+                       <li><a >Create DataEventRecord</a></li>
+                       <li><a >Secured Files Download</a></li>
+   
+                       <li><a class="navigationLinkButton" >Login</a></li>
+                       <li><a class="navigationLinkButton" >Logout</a></li>
+                       <li><a class="navigationLinkButton" >Refresh Session</a></li>
+                 
+                   </ul>
+               </div><!--/.nav-collapse -->
+           </div><!--/.container-fluid -->
+       </nav>
+   
+   <router-outlet></router-outlet>
+   </div>
