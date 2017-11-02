@@ -2,10 +2,12 @@ import { Component } from '@angular/core';
 
 @Component({
     selector: 'logo-bar',
-    template: `
+    template: `<h1>{{title}}</h1>
                <div class="row ">
                 <img  src="/src/app/shared/images/deLogo.jpg">
                </div>
     ` 
 })
-export class LogoComponent {}
+export class LogoComponent {
+    title = 'Diamond Edge';
+}
