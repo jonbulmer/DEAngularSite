@@ -4,14 +4,14 @@ import { DebugElement } from '@angular/core';
 
 import { CompanyListComponent } from './company-list.component';
 
-describe('ErrorComponent (inline tmplate)', () => {
+describe('CompanyListComponent (inline tmplate)', () => {
 
     let comp: CompanyListComponent;
     let fixture: ComponentFixture<CompanyListComponent>;
     let de: DebugElement;
     let el: HTMLElement;
 
-    beforeEach(() => {
+    beforeEach(async() => {
         TestBed.configureTestingModule({
             declarations: [CompanyListComponent],
         });
@@ -24,8 +24,8 @@ describe('ErrorComponent (inline tmplate)', () => {
         el = de.nativeElement;
     });
 
-    it('should display listFilter', () => {
+    it('should display pageTitle', () => {
         fixture.detectChanges();
-        expect(el.textContent).toContain(comp.listFilter);
+        expect(el.textContent).toContain(comp.pageTitle);
     }); 
 });
