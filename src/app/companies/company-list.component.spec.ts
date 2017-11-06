@@ -1,3 +1,4 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By} from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
@@ -14,6 +15,7 @@ describe('CompanyListComponent (inline tmplate)', () => {
     beforeEach(async() => {
         TestBed.configureTestingModule({
             declarations: [CompanyListComponent],
+            schemas: [ NO_ERRORS_SCHEMA ]
         });
 
         fixture = TestBed.createComponent(CompanyListComponent);
