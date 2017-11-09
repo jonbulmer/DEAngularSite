@@ -12,7 +12,6 @@ require('zone.js/dist/async-test');
 require('zone.js/dist/fake-async-test');
 
 var appContext = require.context('../src', true, /\.spec\.ts/);
-console.log(appContext);
 appContext.keys().forEach(appContext);
 
 var testing = require("@angular/core/testing");

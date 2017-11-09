@@ -1,5 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockBackend } from '@angular/http/testing';
 import { By} from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { CompanyService } from './company.service'; 
@@ -8,7 +9,7 @@ import { Comp } from './comp';
 import { CompanyListComponent } from './company-list.component';
 import { CompanyFakeService } from './company-fake.service';
 
-describe('CompanyListComponent (inline tmplate)', () => {
+describe('CompanyListComponent (inline template)', () => {
 
     let comp: CompanyListComponent;
     let fixture: ComponentFixture<CompanyListComponent>;
@@ -22,7 +23,8 @@ describe('CompanyListComponent (inline tmplate)', () => {
         TestBed.configureTestingModule({
             declarations: [CompanyListComponent],
             providers: [
-                { provide: CompanyService, useClass: CompanyFakeService }
+                { provide: CompanyService, useClass: CompanyFakeService },
+                MockBackend
               ],            
             schemas: [ NO_ERRORS_SCHEMA ]
         });
