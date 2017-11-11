@@ -11,14 +11,14 @@ import { ICompany } from './company';
 @Injectable() 
 export class CompanyFakeService {
     private _companyUrl = 'src/api/company/company.json';
-    constructor(private _http: MockBackend) { }
+    //constructor(private _http: MockBackend) { }
 
-    getCompanies(): Observable<ICompany[]> {
-        return this._http.get(this._companyUrl)
-        .map((response: Response) => <ICompany[]> response.json())
-        .do(data => console.log('All: ' + JSON.stringify(data) ))
-        .catch(this.handleError);  
-    };
+    //getCompanies(): Observable<ICompany[]> {
+    //    return this._http.get(this._companyUrl)
+    //    .map((response: Response) => <ICompany[]> response.json())
+    //    .do(data => console.log('All: ' + JSON.stringify(data) ))
+    //   .catch(this.handleError);  
+    //};
 
 
     private handleError(error: Response) {
