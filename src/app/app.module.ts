@@ -3,6 +3,7 @@ import { BrowserModule }  from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AppComponent } from './start/app.component';
+import { Configuration } from '../app/app.constants';
 
 import { NavComponent } from './shared/navbar.component';
 import { LogoComponent } from './shared/logo.component';
@@ -29,6 +30,18 @@ import { AdminModule } from './admin/admin.module';
         ErrorComponent,
         CompanyListComponent
     ],
+    providers: [
+        Configuration
+    ],
     bootstrap: [ AppComponent ]
 })
-export class AppModule { }
+export class AppModule {
+
+
+    clientConfiguration: any;
+
+    constructor(
+        configuration: Configuration
+    ){
+    }    
+ }
