@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule }  from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+
 import { HttpModule } from '@angular/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './start/app.component';
 import { Configuration } from '../app/app.constants';
 
@@ -19,6 +21,7 @@ import { AdminModule } from './admin/admin.module';
         BrowserModule,
         FormsModule,
         HttpModule,
+        HttpClientModule,
         AdminModule,
         AppRoutingModule
     ],
@@ -41,7 +44,17 @@ export class AppModule {
     clientConfiguration: any;
 
     constructor(
+        private http: HttpClient,
         configuration: Configuration
     ){
-    }    
+        this.configClient().subscribe((config: any) => {
+            configuration.FileServer = this.clientConfiguration.apiFileServer;
+            configuration.Server = this.clientConfiguration.apiServer;
+        });
+
+  
+    }
+    configClient() {
+        return this.http.get(`${window.location.origin}/api/ClientAppSettings`);
+    }
  }
