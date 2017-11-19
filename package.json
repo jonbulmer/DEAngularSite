@@ -19,11 +19,14 @@
     "@angular/platform-browser-dynamic": "^4.4.6",
     "@angular/platform-server": "^4.4.6",
     "@angular/router": "^4.4.6",
+    "@angular/upgrade": "5.0.2",
+    "bootstrap": "3.3.7",
     "core-js": "^2.5.1",
     "foundation-sites": "^6.4.3",
     "jquery": "^3.2.1",
     "rxjs": "5.5.2",
     "typescript": "^2.5.3",
+    "jsrsasign": "8.0.4",
     "zone.js": "^0.8.18"
   },
   "devDependencies": {
