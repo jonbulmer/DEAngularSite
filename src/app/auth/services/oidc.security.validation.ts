@@ -4,6 +4,7 @@ import { OidcSecurityCommon } from './oidc.security.common';
 import { KJUR, KEYUTIL, hextob64u } from 'jsrsasign';
 
 // http://openid.net/specs/openid-connect-implicit-1_0.html
+
 // id_token
 //// id_token C1: The Issuer Identifier for the OpenID Provider (which is typically obtained during Discovery) MUST exactly match the value of the iss (issuer) Claim.
 //// id_token C2: The Client MUST validate that the aud (audience) Claim contains its client_id value registered at the Issuer identified by the iss (issuer) Claim as an audience.The ID Token MUST be rejected if the ID Token does not list the Client as a valid audience, or if it contains additional audiences not trusted by the Client.
@@ -16,6 +17,7 @@ import { KJUR, KEYUTIL, hextob64u } from 'jsrsasign';
 //// id_token C9: The value of the nonce Claim MUST be checked to verify that it is the same value as the one that was sent in the Authentication Request.The Client SHOULD check the nonce value for replay attacks.The precise method for detecting replay attacks is Client specific.
 // id_token C10: If the acr Claim was requested, the Client SHOULD check that the asserted Claim Value is appropriate.The meaning and processing of acr Claim Values is out of scope for this document.
 // id_token C11: When a max_age request is made, the Client SHOULD check the auth_time Claim value and request re- authentication if it determines too much time has elapsed since the last End- User authentication.
+
 //// Access Token Validation
 //// access_token C1: Hash the octets of the ASCII representation of the access_token with the hash algorithm specified in JWA[JWA] for the alg Header Parameter of the ID Token's JOSE Header. For instance, if the alg is RS256, the hash algorithm used is SHA-256.
 //// access_token C2: Take the left- most half of the hash and base64url- encode it.
@@ -26,6 +28,27 @@ export class OidcSecurityValidation {
     constructor(private oidcSecrityCommon: OidcSecurityCommon) {
     }
 
+    // id_token C7: The current time MUST be before the time represented by the exp Claim (possibly allowing for some small leeway to account for clock skew).
+    isTokenExpired(token: string, offsetSeconds?: number): boolean {
+        
+                let decoded: any;
+                decoded = this.getPayloadFromToken(token, false);
+        
+                return !(this.validate_id_token_exp_not_expired(decoded, offsetSeconds));
+            }
+        
+            // id_token C7: The current time MUST be before the time represented by the exp Claim (possibly allowing for some small leeway to account for clock skew).
+            validate_id_token_exp_not_expired(decoded_id_token: string, offsetSeconds?: number): boolean {
+                let tokenExpirationDate = this.getTokenExpirationDate(decoded_id_token);
+                offsetSeconds = offsetSeconds || 0;
+        
+                if (tokenExpirationDate == null) {
+                    return false;
+                }
+        
+                // Token not expired?
+                return (tokenExpirationDate.valueOf() > (new Date().valueOf() + (offsetSeconds * 1000)));
+            }
     private urlBase64Decode(str: string) {
         let output = str.replace('-', '+').replace('_', '/');
         switch (output.length % 4) {
