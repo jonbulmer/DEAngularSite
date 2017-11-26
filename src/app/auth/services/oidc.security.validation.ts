@@ -28,27 +28,52 @@ export class OidcSecurityValidation {
     constructor(private oidcSecrityCommon: OidcSecurityCommon) {
     }
 
-    // id_token C7: The current time MUST be before the time represented by the exp Claim (possibly allowing for some small leeway to account for clock skew).
+    // id_token C7: The current time MUST be before the time represented by the exp Claim 
+    // (possibly allowing for some small leeway to account for clock skew).
     isTokenExpired(token: string, offsetSeconds?: number): boolean {
         
-                let decoded: any;
-                decoded = this.getPayloadFromToken(token, false);
+        let decoded: any;
+        decoded = this.getPayloadFromToken(token, false);
+        return !(this.validate_id_token_exp_not_expired(decoded, offsetSeconds));        
+    }
         
-                return !(this.validate_id_token_exp_not_expired(decoded, offsetSeconds));
+    // id_token C7: The current time MUST be before the time represented by the exp Claim (possibly allowing for some small leeway to account for clock skew).
+    validate_id_token_exp_not_expired(decoded_id_token: string, offsetSeconds?: number): boolean {
+        let tokenExpirationDate = this.getTokenExpirationDate(decoded_id_token);
+        offsetSeconds = offsetSeconds || 0;
+        
+        if (tokenExpirationDate == null) {
+            return false;      
+        }
+                
+        // Token not expired?
+        return (tokenExpirationDate.valueOf() > (new Date().valueOf() + (offsetSeconds * 1000)));       
+    }
+
+    getPayloadFromToken(token: any, encode: boolean) {
+        let data = {};
+        if (typeof token !== 'undefined') {
+            let encoded = token.split('.')[1];
+            if (encode) {
+                return encoded;
             }
-        
-            // id_token C7: The current time MUST be before the time represented by the exp Claim (possibly allowing for some small leeway to account for clock skew).
-            validate_id_token_exp_not_expired(decoded_id_token: string, offsetSeconds?: number): boolean {
-                let tokenExpirationDate = this.getTokenExpirationDate(decoded_id_token);
-                offsetSeconds = offsetSeconds || 0;
-        
-                if (tokenExpirationDate == null) {
-                    return false;
-                }
-        
-                // Token not expired?
-                return (tokenExpirationDate.valueOf() > (new Date().valueOf() + (offsetSeconds * 1000)));
-            }
+            data = JSON.parse(this.urlBase64Decode(encoded));
+        }
+
+        return data;
+    }
+
+    private getTokenExpirationDate(dataIdToken: any): Date {
+        if (!dataIdToken.hasOwnProperty('exp')) {
+            return new Date();
+        }
+
+        let date = new Date(0); // The 0 here is the key, which sets the date to the epoch
+        date.setUTCSeconds(dataIdToken.exp);
+
+        return date;
+    }    
+
     private urlBase64Decode(str: string) {
         let output = str.replace('-', '+').replace('_', '/');
         switch (output.length % 4) {
