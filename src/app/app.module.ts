@@ -35,7 +35,7 @@ import { OidcSecurityService } from '../app/auth/services/oidc.security.service'
         CompanyListComponent
     ],
     providers: [
-        OidcSecurityService,
+       // OidcSecurityService,
         Configuration
     ],
     bootstrap: [ AppComponent ]
@@ -46,7 +46,7 @@ export class AppModule {
     clientConfiguration: any;
 
     constructor(
-        public oidcSecurityService: OidcSecurityService,
+      //  public oidcSecurityService: OidcSecurityService,
         private http: HttpClient,
         configuration: Configuration
     ){
