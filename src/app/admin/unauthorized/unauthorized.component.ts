@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
     templateUrl: 'unauthorized.component.html'
 })
 
-export class unauthorizedComponent implements OnInit {
+export class UnauthorizedComponent implements OnInit {
 
     public message: string;
     public values: any[];
