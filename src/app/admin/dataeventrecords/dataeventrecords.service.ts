@@ -13,4 +13,48 @@ export class DataEventRecordsService {
     constructor(private http: HttpClient, _configuration: Configuration) {
         this.actionUrl = `${_configuration.Server}api/DataEventRecords/`;
     }
+
+    private setHeaders() {
+        this.headers = new HttpHeaders();
+        this.headers = this.headers.set('Content-Type', 'application/json');
+        this.headers = this.headers.set('Accept', 'application/json');
+
+        const token = '' //this._securityService.getToken();
+        if (token !== '') {
+            const tokenValue = 'Bearer ' + token;
+            this.headers = this.headers.set('Authorization', tokenValue);
+        }
+    }    
+
+    public GetAll = (): Observable<DataEventRecord[]> => {
+        this.setHeaders();
+
+        return this.http.get<DataEventRecord[]>(this.actionUrl, { headers: this.headers });
+    }   
+    
+    public GetById(id: number): Observable<DataEventRecord> {
+        this.setHeaders();
+        return this.http.get<DataEventRecord>(this.actionUrl + id, {
+            headers: this.headers
+        });
+    }    
+
+    public Add(itemToAdd: any): Observable<any> {
+        this.setHeaders();
+        return this.http.post<any>(this.actionUrl, JSON.stringify(itemToAdd), { headers: this.headers });
+    }
+
+    public Update(id: number, itemToUpdate: any): Observable<any> {
+        this.setHeaders();
+        return this.http
+            .put<any>(this.actionUrl + id, JSON.stringify(itemToUpdate), { headers: this.headers });
+    }
+
+    public Delete(id: number): Observable<any> {
+        this.setHeaders();
+        return this.http.delete<any>(this.actionUrl + id, {
+            headers: this.headers
+        });
+    }    
+
 }
