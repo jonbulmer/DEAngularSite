@@ -10,9 +10,10 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Router } from '@angular/router';
 import { AuthConfiguration, OpenIDImplicitFlowConfiguration  } from '../modules/auth.configuration';
-
 import { OidcSecurityValidation } from './oidc.security.validation';
-
+import { OidcSecurityCheckSession } from './oidc.security.check-session';
+import { OidcSecuritySilentRenew } from './oidc.security.silent-renew';
+import { OidcSecurityUserService } from './oidc.security.user-service';
 import { OidcSecurityCommon } from './oidc.security.common';
 
 import { JwtKeys } from './jwtkeys';

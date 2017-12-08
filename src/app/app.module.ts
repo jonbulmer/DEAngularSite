@@ -35,7 +35,7 @@ import { OidcSecurityService } from '../app/auth/services/oidc.security.service'
         CompanyListComponent
     ],
     providers: [
-       // OidcSecurityService,
+        OidcSecurityService,
         Configuration
     ],
     bootstrap: [ AppComponent ]
