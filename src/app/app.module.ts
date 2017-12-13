@@ -46,7 +46,7 @@ export class AppModule {
     clientConfiguration: any;
 
     constructor(
-      //  public oidcSecurityService: OidcSecurityService,
+        public oidcSecurityService: OidcSecurityService,
         private http: HttpClient,
         configuration: Configuration
     ){
