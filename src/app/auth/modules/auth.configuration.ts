@@ -238,5 +238,4 @@ export class AuthConfiguration {
     init(openIDImplicitFlowConfiguration: OpenIDImplicitFlowConfiguration) {
         this.openIDImplicitFlowConfiguration = openIDImplicitFlowConfiguration;
     }
-
 }

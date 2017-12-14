@@ -1,7 +1,13 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { timer } from 'rxjs/observable/timer';
+import { pluck, take, timeInterval } from 'rxjs/operators';
+import { Observer } from 'rxjs/Observer';
 import { AuthConfiguration } from '../modules/auth.configuration';
 import { OidcSecurityCommon } from './oidc.security.common';
 import { AuthWellKnownEndpoints } from './auth.well-known-endpoints';
+
+// http://openid.net/specs/openid-connect-session-1_0-ID4.html
 
 @Injectable()
 export class OidcSecurityCheckSession {
@@ -102,4 +108,22 @@ export class OidcSecurityCheckSession {
         );
     }    
 
+    private messageHandler(e: any) {
+        if (this.sessionIframe &&
+            e.origin === this.authConfiguration.stsServer &&
+            e.source === this.sessionIframe.contentWindow
+        ) {
+            if (e.data === 'error') {
+                this.oidcSecurityCommon.logWarning(
+                    'error from checksession messageHandler'
+                );
+            } else if (e.data === 'changed') {
+                this.onCheckSessionChanged.emit();
+            } else {
+                this.oidcSecurityCommon.logDebug(
+                    e.data + ' from checksession messageHandler'
+                );
+            }
+        }
+    }    
 }
