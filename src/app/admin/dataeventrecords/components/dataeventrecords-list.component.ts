@@ -1,5 +1,9 @@
 import {Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
+import { OidcSecurityService } from '../../../../app/auth/services/oidc.security.service';
+
+import { DataEventRecordsService } from '../dataeventrecords.service';
+import { DataEventRecord } from '../models/DataEventRecord';
 
 @Component({
     selector: 'app-dataeventrecords-list',
@@ -8,10 +12,70 @@ import { Subscription } from 'rxjs/Subscription';
 
 export class DataEventRecordsListComponent implements OnInit, OnDestroy {
 
-    ngOnInit() {}
+    message: string;
+    DataEventRecords: DataEventRecord[];
+    hasAdminRole = false;
+    isAuthorizedSubscription: Subscription;
+    isAuthorized: boolean;
 
-    ngOnDestroy(): void {
+    userDataSubscription: Subscription;
+    userData: boolean;
 
+    constructor(
+
+        private _dataEventRecordsService: DataEventRecordsService,
+        public oidcSecurityService: OidcSecurityService,
+    ) {
+        this.message = 'DataEventRecords';
     }
 
+    ngOnInit() {
+        this.isAuthorizedSubscription = this.oidcSecurityService.getIsAuthorized().subscribe(
+            (isAuthorized: boolean) => {
+                this.isAuthorized = isAuthorized;
+
+                if (this.isAuthorized) {
+                    console.log('isAuthorized getting data');
+                    this.getData();
+                }
+            });
+
+        this.userDataSubscription = this.oidcSecurityService.getUserData().subscribe(
+            (userData: any) => {
+
+                if (userData !== '') {
+                    for (let i = 0; i < userData.role.length; i++) {
+                        if (userData.role[i] === 'dataEventRecords.admin') {
+                            this.hasAdminRole = true;
+                        }
+                        if (userData.role[i] === 'admin') {
+                        }
+                    }
+                }
+
+                console.log('userData getting data');
+            });    
+    }
+
+    ngOnDestroy(): void {
+        this.isAuthorizedSubscription.unsubscribe();
+        this.userDataSubscription.unsubscribe();
+    }
+
+    public Delete(id: any) {
+        console.log('Try to delete' + id);
+        this._dataEventRecordsService.Delete(id)
+            .subscribe((() => console.log('subscribed')),
+            error => this.oidcSecurityService.handleError(error),
+            () => this.getData());
+    }
+
+    private getData() {
+        this._dataEventRecordsService
+            .GetAll()
+            .subscribe(data => this.DataEventRecords = data,
+            error => this.oidcSecurityService.handleError(error),
+            () => console.log('getData Get all completed'));
+    }
+    
 }
