@@ -3,14 +3,16 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
 import { Configuration } from '../../app.constants';
+import { OidcSecurityService } from '../../auth/services/oidc.security.service';
 import { DataEventRecord } from './models/DataEventRecord';
 
 @Injectable()
 export class DataEventRecordsService {
+
     private actionUrl: string;
     private headers: HttpHeaders;
 
-    constructor(private http: HttpClient, _configuration: Configuration) {
+    constructor(private http: HttpClient, _configuration: Configuration, private _securityService: OidcSecurityService) {
         this.actionUrl = `${_configuration.Server}api/DataEventRecords/`;
     }
 
@@ -19,7 +21,7 @@ export class DataEventRecordsService {
         this.headers = this.headers.set('Content-Type', 'application/json');
         this.headers = this.headers.set('Accept', 'application/json');
 
-        const token = '' //this._securityService.getToken();
+        const token = this._securityService.getToken();
         if (token !== '') {
             const tokenValue = 'Bearer ' + token;
             this.headers = this.headers.set('Authorization', tokenValue);
@@ -56,5 +58,4 @@ export class DataEventRecordsService {
             headers: this.headers
         });
     }    
-
 }
