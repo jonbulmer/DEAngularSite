@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule }  from '@angular/platform-browser';
 
-//import { HttpModule } from '@angular/http';
+// import { HttpModule } from '@angular/http';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './start/app.component';
 import { routing } from './app.routes'
@@ -54,7 +54,7 @@ export class AppModule {
         public oidcSecurityService: OidcSecurityService,
         private http: HttpClient,
         configuration: Configuration
-    ){
+    ) {
         this.configClient().subscribe((config: any) => {
             this.clientConfiguration = config;
             const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
@@ -89,7 +89,7 @@ export class AppModule {
             this.oidcSecurityService.setupModule(openIDImplicitFlowConfiguration);
         });
 
-  
+
     }
     configClient() {
         console.log('window.location', window.location);
