@@ -1,57 +1,63 @@
-import { PLATFORM_ID, Inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpParams } from '@angular/common/http';
+import { Inject, PLATFORM_ID } from '@angular/core';
 import { Injectable, EventEmitter, Output } from "@angular/core";
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Router } from '@angular/router';
+import { timer } from 'rxjs/observable/timer';
+import { pluck, take, catchError, timeInterval } from 'rxjs/operators';
+
+import { AuthorizationResult } from '../models/authorization-result.enum';
+import { JwtKeys } from '../models/jwtkeys';
+import { ValidateStateResult } from '../models/validate-state-result.model';
 import { 
     AuthConfiguration, 
     OpenIDImplicitFlowConfiguration  
 } from '../modules/auth.configuration';
-import { OidcSecurityValidation } from './oidc.security.validation';
+import { AuthWellKnownEndpoints } from './auth.well-known-endpoints';
+import { StateValidationService } from './oidc-security-state-validation.service';
 import { OidcSecurityCheckSession } from './oidc.security.check-session';
+import { OidcSecurityCommon } from './oidc.security.common';
 import { OidcSecuritySilentRenew } from './oidc.security.silent-renew';
 import { OidcSecurityUserService } from './oidc.security.user-service';
-import { OidcSecurityCommon } from './oidc.security.common';
-import { AuthWellKnownEndpoints } from './auth.well-known-endpoints';
-import { JwtKeys } from './jwtkeys';
-import { AuthorizationResult } from './authorization-result.enum';
+import { OidcSecurityValidation } from './oidc.security.validation';
 import { UriEncoder } from './uri-encoder';
-import { timer } from 'rxjs/observable/timer';
-import { pluck, take, catchError, timeInterval } from 'rxjs/operators';
+import { OidcDataService } from './oidc-data.service';
+import { TokenHelperService } from './oidc-token-helper.service';
+import { LoggerService } from './oidc.logger.service';
 
 @Injectable()
 export class OidcSecurityService {
-    @Output() onModuleSetup: EventEmitter<any> = new EventEmitter<any>(true);
-    @Output() 
-    onAuthorizationResult: EventEmitter<AuthorizationResult> = new EventEmitter<
-        AuthorizationResult
-    >(true);
+    @Output() onModuleSetup = new EventEmitter<any>(true);
+    @Output() onAuthorizationResult = new EventEmitter<AuthorizationResult>();
 
     checkSessionChanged: boolean;
     moduleSetup = false;
+
     private _isAuthorized = new BehaviorSubject<boolean>(false);
     private _isAuthorizedValue: boolean;   
 
-    private lastUserData: any = undefined;
+    private lastUserData: any;
     private _userData = new BehaviorSubject<any>('');
     
-    private oidcSecurityValidation: OidcSecurityValidation;
-    private jwtKeys: JwtKeys;
     private authWellKnownEndpointsLoaded = false;
     private runTokenValidationRunning: boolean;    
     
     constructor(
         @Inject(PLATFORM_ID) private platformId: Object,
-        private http: HttpClient,
+        private oidcDataService: OidcDataService,
+        private stateValidationService: StateValidationService,
         private authConfiguration: AuthConfiguration,
         private router: Router,
         private oidcSecurityCheckSession: OidcSecurityCheckSession,
         private oidcSecuritySilentRenew: OidcSecuritySilentRenew,
         private oidcSecurityUserService: OidcSecurityUserService,
         private oidcSecurityCommon: OidcSecurityCommon,
-        private authWellKnownEndpoints: AuthWellKnownEndpoints
+        private authWellKnownEndpoints: AuthWellKnownEndpoints,
+        private oidcSecurityValidation: OidcSecurityValidation,
+        private tokenHelperService: TokenHelperService,
+        private loggerService: LoggerService
     ) {}
 
     setupModule(

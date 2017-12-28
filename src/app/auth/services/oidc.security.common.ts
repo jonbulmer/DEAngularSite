@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AuthConfiguration } from '../modules/auth.configuration';
 import { OidcSecurityStorage } from './oidc.security.storage';
 
 export type SilentRenewState = 'running' | '';
 
 @Injectable()
 export class OidcSecurityCommon {
-
     private storage_auth_result = 'authorizationResult';
     
         public get authResult(): any {
@@ -109,18 +107,21 @@ export class OidcSecurityCommon {
     
         private storage_custom_request_params = 'storage_custom_request_params';
     
-        public get customRequestParams(): { [key: string]: string | number | boolean } {
+        public get customRequestParams(): { 
+            [key: string]: string | number | boolean 
+        } {
             return this.retrieve(this.storage_custom_request_params);
         }
     
-        public set customRequestParams(value: { [key: string]: string | number | boolean }) {
+        public set customRequestParams(value: { 
+            [key: string]: string | number | boolean 
+        }) {
             this.store(this.storage_custom_request_params, value);
         }
     
-        constructor(private authConfiguration: AuthConfiguration, private oidcSecurityStorage: OidcSecurityStorage) {
-        }
+        constructor(private oidcSecurityStorage: OidcSecurityStorage) {}
     
-        setupModule() { }
+        setupModule() {}
     
         private retrieve(key: string): any {
             return this.oidcSecurityStorage.read(key);
@@ -148,21 +149,5 @@ export class OidcSecurityCommon {
     
         getIdToken(): any {
             return this.retrieve(this.storage_id_token);
-        }
-    
-        logError(message: any) {
-            console.error(message);
-        }
-    
-        logWarning(message: any) {
-            if (this.authConfiguration.log_console_warning_active) {
-                console.warn(message);
-            }
-        }
-    
-        logDebug(message: any) {
-            if (this.authConfiguration.log_console_debug_active) {
-                console.log(message);
-            }
         }
 }
