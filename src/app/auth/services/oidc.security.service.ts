@@ -353,23 +353,24 @@ getUserinfo(
                 this.oidcSecurityUserService
                     .initUserData()
                     .subscribe(() => {
-                        this.oidcSecurityCommon.logDebug(
+                        this.loggerService.logDebug(
                             'authorizedCallback id_token token flow'
                         );
+
+                        const userData = this.oidcSecurityUserService.getUserData();
+
                         if (
                             this.oidcSecurityValidation.validate_userdata_sub_id_token(
                                 decoded_id_token.sub,
-                                this.oidcSecurityUserService.userData.sub
+                                userData.sub
                             )
                         ) {
-                            this.setUserData(
-                                this.oidcSecurityUserService.userData
-                            );
-                            this.oidcSecurityCommon.logDebug(
+                            this.setUserData(userData);
+                            this.loggerService.logDebug(
                                 this.oidcSecurityCommon.accessToken
                             );
-                            this.oidcSecurityCommon.logDebug(
-                                this.oidcSecurityUserService.userData
+                            this.loggerService.logDebug(
+                                this.oidcSecurityUserService.getUserData()
                             );
 
                             this.oidcSecurityCommon.sessionState =
@@ -379,10 +380,10 @@ getUserinfo(
                             observer.next(true);
                         } else {
                             // something went wrong, userdata sub does not match that from id_token
-                            this.oidcSecurityCommon.logWarning(
+                            this.loggerService.logWarning(
                                 'authorizedCallback, User data sub does not match sub in id_token'
                             );
-                            this.oidcSecurityCommon.logDebug(
+                            this.loggerService.logDebug(
                                 'authorizedCallback, token(s) validation failed, resetting'
                             );
                             this.resetAuthorizationData(false);
