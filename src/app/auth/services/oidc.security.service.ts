@@ -247,13 +247,13 @@ export class OidcSecurityService {
                 jwtKeys
             );
             
-            this.oidcSecurityCommon.silentRenewRunning = '';           
-
             if (validationResult.authResponseIsValid) {
             this.setAuthorizationData(
                 validationResult.access_token, 
                 validationResult.id_token
             );
+            this.oidcSecurityCommon.silentRenewRunning = '';
+
             if (this.authConfiguration.auto_userinfo) {
                 this.getUserinfo(
                     isRenewProcess,
@@ -316,7 +316,9 @@ export class OidcSecurityService {
             this.loggerService.logDebug(
                 'authorizedCallback, token(s) validation failed, resetting'
             );
+            this.loggerService.logWarning(window.location.hash);
             this.resetAuthorizationData(false);
+            this.oidcSecurityCommon.silentRenewRunning = '';
             if (this.authConfiguration.trigger_authorization_result_event) {
                 this.onAuthorizationResult.emit(
                     AuthorizationResult.unauthorized
@@ -394,16 +396,14 @@ getUserinfo(
             }
         } else {
             // flow id_token
-            this.oidcSecurityCommon.logDebug(
-                'authorizedCallback id_token flow'
-            );
-            this.oidcSecurityCommon.logDebug(
+            this.loggerService.logDebug('authorizedCallback id_token flow');
+            this.loggerService.logDebug(
                 this.oidcSecurityCommon.accessToken
             );
 
             // userData is set to the id_token decoded. No access_token.
-            this.oidcSecurityUserService.userData = decoded_id_token;
-            this.setUserData(this.oidcSecurityUserService.userData);
+            this.oidcSecurityUserService.setUserData(decoded_id_token);
+            this.setUserData(this.oidcSecurityUserService.getUserData());
 
             this.oidcSecurityCommon.sessionState = result.session_state;
 
@@ -419,7 +419,7 @@ getUserinfo(
 
 logoff() {
     // /connect/endsession?id_token_hint=...&post_logout_redirect_uri=https://myapp.com
-    this.oidcSecurityCommon.logDebug('BEGIN Authorize, no auth data');
+    this.loggerService.logDebug('BEGIN Authorize, no auth data');
 
     if (this.authWellKnownEndpoints.end_session_endpoint) {
         const end_session_endpoint = this.authWellKnownEndpoints
@@ -436,7 +436,7 @@ logoff() {
             this.authConfiguration.start_checksession &&
             this.checkSessionChanged
         ) {
-            this.oidcSecurityCommon.logDebug(
+            this.loggerService.logDebug(
                 'only local login cleaned up, server session has changed'
             );
         } else {
@@ -444,14 +444,14 @@ logoff() {
         }
     } else {
         this.resetAuthorizationData(false);
-        this.oidcSecurityCommon.logDebug(
+        this.loggerService.logDebug(
             'only local login cleaned up, no end_session_endpoint'
         );
     }
 }
 
     refreshSession() {
-        this.oidcSecurityCommon.logDebug('BEGIN refresh session Authorize');
+        this.loggerService.logDebug('BEGIN refresh session Authorize');
 
         let state = this.oidcSecurityCommon.authStateControl;
         if (state === '' || state === null) {
@@ -461,7 +461,7 @@ logoff() {
 
         const nonce = 'N' + Math.random() + '' + Date.now();
         this.oidcSecurityCommon.authNonce = nonce;
-        this.oidcSecurityCommon.logDebug(
+        this.loggerService.logDebug(
             'RefreshSession created. adding myautostate: ' +
                 this.oidcSecurityCommon.authStateControl
         );
@@ -478,7 +478,7 @@ logoff() {
     }
 
     handleError(error: any) {
-        this.oidcSecurityCommon.logError(error);
+        this.loggerService.logError(error);
         if (error.status === 403 || error.status === '403') {
             if (this.authConfiguration.trigger_authorization_result_event) {
                 this.onAuthorizationResult.emit(
@@ -489,7 +489,9 @@ logoff() {
             }
         } else if (error.status === 401 || error.status === '401') {
             const silentRenew = this.oidcSecurityCommon.silentRenewRunning;
-            this.resetAuthorizationData(silentRenew !== '');
+
+            this.resetAuthorizationData(!!silentRenew);
+
             if (this.authConfiguration.trigger_authorization_result_event) {
                 this.onAuthorizationResult.emit(
                     AuthorizationResult.unauthorized
@@ -500,7 +502,7 @@ logoff() {
                 ]);
             }
         }
-    }    
+    } 
 
     private getValidatedStateResult(
         result: any,
@@ -523,27 +525,14 @@ logoff() {
         this._isAuthorized.next(isAuthorized);
     }
 
-    private successful_validation() {
-        this.oidcSecurityCommon.authNonce = '';
-
-        if (this.authConfiguration.auto_clean_state_after_authentication) {
-            this.oidcSecurityCommon.authStateControl = '';
-        }
-        this.oidcSecurityCommon.logDebug(
-            'AuthorizedCallback token(s) validated, continue'
-        );
-    }
-
     private setAuthorizationData(access_token: any, id_token: any) {
         if (this.oidcSecurityCommon.accessToken !== '') {
             this.oidcSecurityCommon.accessToken = '';
         }
 
-        this.oidcSecurityCommon.logDebug(access_token);
-        this.oidcSecurityCommon.logDebug(id_token);
-        this.oidcSecurityCommon.logDebug(
-            'storing to storage, getting the roles'
-        );
+        this.loggerService.logDebug(access_token);
+        this.loggerService.logDebug(id_token);
+        this.loggerService.logDebug('storing to storage, getting the roles');
         this.oidcSecurityCommon.accessToken = access_token;
         this.oidcSecurityCommon.idToken = id_token;
         this.setIsAuthorized(true);
