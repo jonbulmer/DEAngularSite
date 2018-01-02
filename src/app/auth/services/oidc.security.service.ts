@@ -563,9 +563,11 @@ logoff() {
         params = params.append('scope', this.authConfiguration.scope);
         params = params.append('nonce', nonce);
         params = params.append('state', state);
+
         if (prompt) {
             params = params.append('prompt', prompt);
         }
+
         if (this.authConfiguration.hd_param) {
             params = params.append('hd', this.authConfiguration.hd_param);
         }
@@ -616,36 +618,34 @@ logoff() {
     }
 
     private onCheckSessionChanged() {
-        this.oidcSecurityCommon.logDebug('onCheckSessionChanged');
+        this.loggerService.logDebug('onCheckSessionChanged');
         this.checkSessionChanged = true;
     }
 
     private onWellKnownEndpointsLoaded() {
-        this.oidcSecurityCommon.logDebug('onWellKnownEndpointsLoaded');
+        this.loggerService.logDebug('onWellKnownEndpointsLoaded');
         this.authWellKnownEndpointsLoaded = true;
     }
 
     private onUserDataChanged() {
-        this.oidcSecurityCommon.logDebug(
+        this.loggerService.logDebug(
             `onUserDataChanged: last = ${this.lastUserData}, new = ${
                 this._userData.value
             }`
         );
 
         if (this.lastUserData && !this._userData.value) {
-            this.oidcSecurityCommon.logDebug(
-                'onUserDataChanged: Logout detected.'
-            );
+            this.loggerService.logDebug('onUserDataChanged: Logout detected.');
             // TODO should we have an action here
         }
         this.lastUserData = this._userData.value;
     }
 
     private getSigningKeys(): Observable<JwtKeys> {
-        this.oidcSecurityCommon.logDebug(
+        this.loggerService.logDebug(
             'jwks_uri: ' + this.authWellKnownEndpoints.jwks_uri
         );
-        return this.http
+        return this.oidcDataService
             .get<JwtKeys>(this.authWellKnownEndpoints.jwks_uri)
             .pipe(catchError(this.handleErrorGetSigningKeys));
     }
@@ -677,12 +677,10 @@ logoff() {
 
         source.subscribe(
             () => {
-                if (this._userData.value) {
-                    if (
-                        this.oidcSecurityValidation.isTokenExpired(
+                if (this._userData.value  && (this.oidcSecurityCommon.silentRenewRunning)  && this.getIdToken()) {
+                    if (this.oidcSecurityValidation.isTokenExpired(
                             this.oidcSecurityCommon.idToken,
-                            this.authConfiguration
-                                .silent_renew_offset_in_seconds
+                            this.authConfiguration.silent_renew_offset_in_seconds
                         )
                     ) {
                         this.loggerService.logDebug(

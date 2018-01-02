@@ -82,7 +82,7 @@ export class OidcSecurityCheckSession {
         source.subscribe(
             () => {
                 if (this.sessionIframe && clientId) {
-                    this.oidcSecurityCommon.logDebug(this.sessionIframe);
+                    this.loggerService.logDebug(this.sessionIframe);
                     const session_state = this.oidcSecurityCommon.sessionState;
                     if (session_state) {
                         this.sessionIframe.contentWindow.postMessage(

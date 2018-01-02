@@ -78,7 +78,7 @@ export class AuthWellKnownEndpoints {
         }
     }
 
-    private getWellKnownEndpoints = (): Observable<any> {
+    private getWellKnownEndpoints(): Observable<any> {
         const url = this.getUrl();
 
         return this.oidcDataService.getWellknownEndpoints(url);
