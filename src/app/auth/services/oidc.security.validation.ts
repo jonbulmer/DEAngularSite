@@ -4,6 +4,7 @@ import { KJUR, KEYUTIL, hextob64u } from 'jsrsasign';
 import { ArrayHelperService } from './oidc-array-helper.service';
 import { TokenHelperService } from './oidc-token-helper.service';
 import { LoggerService } from './oidc.logger.service';
+import { subscriptionLogsToBeFn } from 'rxjs/testing/TestScheduler';
 
 // http://openid.net/specs/openid-connect-implicit-1_0.html
 
@@ -259,60 +260,34 @@ validate_id_token_aud(dataIdToken: any, aud: any): boolean {
 }
 
 validateStateFromHashCallback(state: any, local_state: any): boolean {
-    if (state != local_state) {
-        this.oidcSecurityCommon.logDebug('ValidateStateFromHashCallback failed, state: ' + state + ' local_state:' + local_state);
+    if ((state as string) !== (local_state as string)) {
+        this.loggerService.logDebug(
+            'ValidateStateFromHashCallback failed, state: ' + 
+            state + 
+            ' local_state:' + 
+            local_state
+        );
         return false;
     }
 
     return true;
 }
 
-validate_userdata_sub_id_token(id_token_sub: any, userdata_sub: any): boolean {
-    if (id_token_sub != userdata_sub) {
-        this.oidcSecurityCommon.logDebug('validate_userdata_sub_id_token failed, id_token_sub: ' + id_token_sub + ' userdata_sub:' + userdata_sub);
+validate_userdata_sub_id_token(
+    id_token_sub: any, 
+    userdata_sub: any
+): boolean {
+    if ((id_token_sub as string) !== (userdata_sub as string)) {
+        this.loggerService.logDebug(
+            'validate_userdata_sub_id_token failed, id_token_sub: ' +
+                id_token_sub + 
+                ' userdata_sub:' + 
+                userdata_sub
+        );
         return false;
     }
 
     return true;
-}
-
-getPayloadFromToken(token: any, encode: boolean) {
-    let data = {};
-    if (typeof token !== 'undefined') {
-        let encoded = token.split('.')[1];
-        if (encode) {
-            return encoded;
-        }
-        data = JSON.parse(this.urlBase64Decode(encoded));
-    }
-
-    return data;
-}
-
-getHeaderFromToken(token: any, encode: boolean) {
-    let data = {};
-    if (typeof token !== 'undefined') {
-        let encoded = token.split('.')[0];
-        if (encode) {
-            return encoded;
-        }
-        data = JSON.parse(this.urlBase64Decode(encoded));
-    }
-
-    return data;
-}
-
-getSignatureFromToken(token: any, encode: boolean) {
-    let data = {};
-    if (typeof token !== 'undefined') {
-        let encoded = token.split('.')[2];
-        if (encode) {
-            return encoded;
-        }
-        data = JSON.parse(this.urlBase64Decode(encoded));
-    }
-
-    return data;
 }
 
 // id_token C5: The Client MUST validate the signature of the ID Token according to JWS [JWS] using the algorithm 
@@ -320,23 +295,28 @@ getSignatureFromToken(token: any, encode: boolean) {
 // id_token C6: The alg value SHOULD be RS256. Validation of tokens using other signing algorithms is described 
 //   in the OpenID Connect Core 1.0 [OpenID.Core] specification.
 validate_signature_id_token(id_token: any, jwtkeys: any): boolean {
-  
     if (!jwtkeys || !jwtkeys.keys) {
         return false;            
     }
                  
-    let header_data = this.getHeaderFromToken(id_token, false);
+    const header_data = this.tokenHelperService.getHeaderFromToken(
+        id_token, 
+        false
+    );
             
-    if ((Object.keys(header_data).length === 0 && header_data.constructor === Object)) {
-        this.oidcSecurityCommon.logWarning('id token has no header data');
+    if (
+        Object.keys(header_data).length === 0 &&
+        header_data.constructor === Object
+    ) {
+        this.loggerService.logWarning('id token has no header data');
         return false;    
     }
                    
-    let kid = header_data.kid;
-    let alg = header_data.alg;
+    const kid = header_data.kid;
+    const alg = header_data.alg;
         
-    if ('RS256' != alg) {
-        this.oidcSecurityCommon.logWarning('Only RS256 supported');
+    if ('RS256' != alg (alg as string)) {
+        this.loggerService.logWarning('Only RS256 supported');
         return false;    
     }
         
@@ -346,25 +326,39 @@ validate_signature_id_token(id_token: any, jwtkeys: any): boolean {
         // exactly 1 key in the jwtkeys and no kid in the Jose header
         // kty	"RSA" use "sig"
         let amountOfMatchingKeys = 0;
-            for (let key of jwtkeys.keys) {
-                if (key.kty == 'RSA' && key.use == 'sig') {
+            for (const key of jwtkeys.keys) {
+                if (
+                    (key.kty as string) === 'RSA' && 
+                    (key.use as string) === 'sig'
+                ) {
                 amountOfMatchingKeys = amountOfMatchingKeys + 1;
             }
         }
         
-        if (amountOfMatchingKeys == 0) {
-            this.oidcSecurityCommon.logWarning('no keys found, incorrect Signature, validation failed for id_token');
+        if (amountOfMatchingKeys === 0) {
+            this.loggerService.logWarning(
+                'no keys found, incorrect Signature, validation failed for id_token'
+            );
             return false;
         } else if (amountOfMatchingKeys > 1 ) {
-            this.oidcSecurityCommon.logWarning('no ID Token kid claim in JOSE header and multiple supplied in jwks_uri');
+            this.loggerService.logWarning(
+                'no ID Token kid claim in JOSE header and multiple supplied in jwks_uri'
+            );
             return false;    
         } else {
-            for (let key of jwtkeys.keys) {
-                if (key.kty == 'RSA' && key.use == 'sig') {
-                    let publickey = KEYUTIL.getKey(key);
-                    isValid = KJUR.jws.JWS.verify(id_token, publickey, ['RS256']);
+            for (const key of jwtkeys.keys) {
+                if (
+                    (key.kty as string) === 'RSA' && 
+                    (key.use as string) === 'sig'
+                ) {
+                    const publickey = KEYUTIL.getKey(key);
+                    isValid = KJUR.jws.JWS.verify(id_token, publickey, [
+                        'RS256'
+                    ]);
                     if (!isValid) {
-                        this.oidcSecurityCommon.logWarning('incorrect Signature, validation failed for id_token');            
+                        this.loggerService.logWarning(
+                            'incorrect Signature, validation failed for id_token'
+                        );            
                     }  
                     return isValid;     
                 }          
@@ -372,42 +366,39 @@ validate_signature_id_token(id_token: any, jwtkeys: any): boolean {
         }         
     } else {
         // kid in the Jose header of id_token
-        for (let key of jwtkeys.keys) {
-            if (key.kid == kid) {
-                let publickey = KEYUTIL.getKey(key);
-                isValid = KJUR.jws.JWS.verify(id_token, publickey, ['RS256']);
+        for (const key of jwtkeys.keys) {
+            if ((key.kid as string) === (kid as string)) {
+                const publickey = KEYUTIL.getKey(key);
+                isValid = KJUR.jws.JWS.verify(id_token, publickey, [
+                    'RS256'
+                ]);
                 if (!isValid) {
-                    this.oidcSecurityCommon.logWarning('incorrect Signature, validation failed for id_token');            
+                    this.loggerService.logWarning(
+                        'incorrect Signature, validation failed for id_token'
+                    );            
                 }
-                    return isValid;    
-                }       
-            }       
-        }
+                return isValid;        
+            }           
+        }           
+    }
     
-        return isValid;
+    return isValid;
     }
 
     config_validate_response_type(response_type: string): boolean {
-        if (response_type === 'id_token token' || response_type === 'id_token') {
+        if (
+            response_type === 'id_token token' ||
+            response_type === 'id_token'
+        ) {
             return true;
         }
         
-        this.oidcSecurityCommon.logWarning('module configure incorrect, invalid response_type:' + response_type);
+        this.loggerService.logWarning(
+            'module configure incorrect, invalid response_type:' + response_type
+        );
         return false;
     }
 
-    // Accepts ID Token without 'kid' claim in JOSE header if only one JWK supplied in 'jwks_url'
-    ////private validate_no_kid_in_header_only_one_allowed_in_jwtkeys(header_data: any, jwtkeys: any): boolean {
-    ////    this.oidcSecurityCommon.logDebug('amount of jwtkeys.keys: ' + jwtkeys.keys.length);
-    ////    if (!header_data.hasOwnProperty('kid')) {
-    ////        // no kid defined in Jose header
-    ////        if (jwtkeys.keys.length != 1) {
-    ////            this.oidcSecurityCommon.logDebug('jwtkeys.keys.length != 1 and no kid in header');
-    ////            return false;
-    ////        }
-    ////    }
-    ////    return true;
-    ////}
     // Access Token Validation
     // access_token C1: Hash the octets of the ASCII representation of the access_token with the hash algorithm specified
     // in JWA[JWA] for the alg Header Parameter of the ID Token's JOSE Header. For instance, if the alg is RS256, the hash
@@ -416,19 +407,15 @@ validate_signature_id_token(id_token: any, jwtkeys: any): boolean {
     // access_token C3: The value of at_hash in the ID Token MUST match the value produced in the previous step if at_hash
     // is present in the ID Token.
     validate_id_token_at_hash(access_token: any, at_hash: any): boolean {
-        this.oidcSecurityCommon.logDebug('From the server:' + at_hash);
+        this.loggerService.logDebug('From the server:' + at_hash);
         let testdata =  this.generate_at_hash('' + access_token);
-        this.oidcSecurityCommon.logDebug('client validation not decoded:' + testdata);
-        if (testdata == at_hash) {
+        this.loggerService.logDebug(
+            'client validation not decoded:' + testdata
+        );
+        if (testdata === (at_hash as string) {
             return true; // isValid;
-        } else {
-            let testValue = this.generate_at_hash('' + decodeURIComponent(access_token));
-            this.oidcSecurityCommon.logDebug('-gen access--' + testValue);
-           if (testValue == at_hash) {
-                return true; // isValid
-            }
-        }
-
+        } 
+        
         return false;
     }      
     
@@ -438,35 +425,5 @@ validate_signature_id_token(id_token: any, jwtkeys: any): boolean {
           let testdata = hextob64u(first128bits);
   
         return testdata;
-      }    
-            
-
-    private getTokenExpirationDate(dataIdToken: any): Date {
-        if (!dataIdToken.hasOwnProperty('exp')) {
-            return new Date();
-        }
-
-        let date = new Date(0); // The 0 here is the key, which sets the date to the epoch
-        date.setUTCSeconds(dataIdToken.exp);
-
-        return date;
-    }    
-
-    private urlBase64Decode(str: string) {
-        let output = str.replace('-', '+').replace('_', '/');
-        switch (output.length % 4) {
-            case 0:
-                break;
-            case 2:
-                output += '==';
-                break;
-            case 3:
-                output += '=';
-                break;
-            default:
-                throw 'Illegal base64url string!';
-        }
-
-        return window.atob(output);
-    }
+      }
 }
