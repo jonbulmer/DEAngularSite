@@ -67,22 +67,23 @@ export class OidcSecurityValidation {
     // id_token C7: The current time MUST be before the time represented by the exp Claim 
     //   (possibly allowing for some small leeway to account for clock skew).
     validate_id_token_exp_not_expired(
-        decoded_id_token:
-        string, offsetSeconds?: number
+        decoded_id_token: string, 
+        offsetSeconds?: number
     ): boolean {
         const tokenExpirationDate = this.tokenHelperService.getTokenExpirationDate(
             decoded_id_token
         );
         offsetSeconds = offsetSeconds || 0;
         
-        if (tokenExpirationDate == null) {
+        if (!tokenExpirationDate == null) {
             return false;      
         }
                 
         // Token not expired?
         return (
             tokenExpirationDate.valueOf() >
-            new Date().valueOf() + (offsetSeconds * 1000       
+            new Date().valueOf() + offsetSeconds * 1000       
+        );
     }
 
 
@@ -408,14 +409,22 @@ validate_signature_id_token(id_token: any, jwtkeys: any): boolean {
     // is present in the ID Token.
     validate_id_token_at_hash(access_token: any, at_hash: any): boolean {
         this.loggerService.logDebug('From the server:' + at_hash);
-        let testdata =  this.generate_at_hash('' + access_token);
+        const testdata =  this.generate_at_hash('' + access_token);
         this.loggerService.logDebug(
             'client validation not decoded:' + testdata
         );
-        if (testdata === (at_hash as string) {
+        if (testdata === (at_hash as string)) {
             return true; // isValid;
-        } 
-        
+        } else {
+            const testValue = this.generate_at_hash(
+                '' + decodeURIComponent(access_token)
+            );
+            this.loggerService.logDebug('-gen acces--' + testValue);
+            if (testValue === (at_hash as string)) {
+                return true; //isValid
+            }
+        }
+
         return false;
     }      
     

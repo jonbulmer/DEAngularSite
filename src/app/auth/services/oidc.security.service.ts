@@ -342,7 +342,7 @@ getUserinfo(
     id_token = id_token ? id_token : this.oidcSecurityCommon.idToken;
     decoded_id_token = decoded_id_token
         ? decoded_id_token
-        : this.oidcSecurityValidation.getPayloadFromToken(id_token, false);
+        : this.tokenHelperService.getPayloadFromToken(id_token, false);
 
     return new Observable<boolean>(observer => {
         // flow id_token token
