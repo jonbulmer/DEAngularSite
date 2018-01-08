@@ -5,9 +5,9 @@ import { BrowserModule }  from '@angular/platform-browser';
 // import { HttpModule } from '@angular/http';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './start/app.component';
-import { routing } from './app.routes'
-import { Configuration } from '../app/app.constants';
-import { SecureFileService } from '../app/admin/securefile/SecureFileService';
+import { routing } from './admin/admin.routes'
+import { Configuration } from './app.constants';
+import { SecureFileService } from './admin/securefile/SecureFileService';
 import { NavComponent } from './shared/navbar.component';
 import { LogoComponent } from './shared/logo.component';
 import { HomeComponent } from  './home/home.component';
