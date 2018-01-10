@@ -1,7 +1,7 @@
 import { Routes, RouterModule } from '@angular/router';
 
 import { ForbiddenComponent } from './forbidden/forbidden.component';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from '../home/home.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { SecureFilesComponent } from './securefile/securefiles.component';
 
