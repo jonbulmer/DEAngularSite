@@ -31,6 +31,25 @@ export class AppComponent implements OnInit, OnDestroy {
             });
         }        
     }
+
+    this.oidcSecurityService.onCheckSessionChanged.subscribe(
+        (checksession: boolean) => {
+            console.log('...recieved a check session event');
+            this.checksession = checksession;
+        });
+
+    this.oidcSecurityService.onAuthorizationResult.subscribe(
+        (authorizationResult: AuthorizationResult) => {
+            this.onAuthorizationResultComplete(authorizationResult);
+        });
+
+        ngOnDestroy(): void {
+            this.isAuthorizedSubscription.unsubscribe();
+            this.oidcSecurityService.onModuleSetup.unsubscribe();
+            this.oidcSecurityService.onCheckSessionChanged.unsubscribe();
+            this.oidcSecurityService.onAuthorizationResult.unsubscribe();
+        }
+
         ngOnInit() {
             this.isAuthorizedSubscription = this.oidcSecurityService.getIsAuthorized().subscribe(
                 (isAuthorized: boolean) => {
@@ -40,12 +59,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
      
     
-        ngOnDestroy(): void {
-            this.isAuthorizedSubscription.unsubscribe();
-            this.oidcSecurityService.onModuleSetup.unsubscribe();
-            this.oidcSecurityService.onCheckSessionChanged.unsubscribe();
-            this.oidcSecurityService.onAuthorizationResult.unsubscribe();
-        }
+ 
 
         login() {
             this.oidcSecurityService.authorize();
@@ -78,8 +92,7 @@ export class AppComponent implements OnInit, OnDestroy {
                     window.location.href = '/unauthorized';
                 }
             }
-        }        
-
+        }
     }
-
-}
+}        
+    
