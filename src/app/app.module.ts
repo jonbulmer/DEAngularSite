@@ -1,29 +1,43 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule }  from '@angular/platform-browser';
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './start/app.component';
-
 import { Configuration } from './app.constants';
 import { routing } from './admin/admin.routes';
-import { UnauthorizedComponent } from './admin/unauthorized/unauthorized.component';
+
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+
 import { SecureFileService } from './admin/securefile/SecureFileService';
-import { SecureFilesComponent } from './admin/securefile/securefiles.component';
-import { NavComponent } from './shared/navbar.component';
-import { LogoComponent } from './shared/logo.component';
 
 import { ForbiddenComponent } from './admin/forbidden/forbidden.component';
 import { HomeComponent } from  './home/home.component';
+import { UnauthorizedComponent } from './admin/unauthorized/unauthorized.component';
+import { SecureFilesComponent } from './admin/securefile/securefiles.component';
+
+import { AuthModule } from './auth/modules/auth.module';
+import { OidcSecurityService } from '../app/auth/services/oidc.security.service';
+import { OpenIDImplicitFlowConfiguration } from './auth/modules/auth.configuration';
+
+import { DataEventRecordsModule } from './admin/dataeventrecords/dataeventrecords.module';
+
+import { AuthorizationGuard } from './admin/authorization.guard';
+import { AuthorizationCanGuard } from './authorization.can.guard';
+
+import { NavComponent } from './shared/navbar.component';
+import { LogoComponent } from './shared/logo.component';
+
+
+
 import { ErrorComponent } from './error/error.component';
 import { AppRoutingModule } from './shared/app.routing';
 import { CompanyListComponent } from './companies/company-list.component';
 
 import { AdminModule } from './admin/admin.module';
-import { OidcSecurityService } from '../app/auth/services/oidc.security.service';
-import { OpenIDImplicitFlowConfiguration } from './auth/modules/auth.configuration';
 
-import { DataEventRecordsModule } from './admin/dataeventrecords/dataeventrecords.module';
+
+
+
 
 
 @NgModule({
