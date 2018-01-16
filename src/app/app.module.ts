@@ -24,16 +24,8 @@ import { DataEventRecordsModule } from './admin/dataeventrecords/dataeventrecord
 import { AuthorizationGuard } from './admin/authorization.guard';
 import { AuthorizationCanGuard } from './authorization.can.guard';
 
-import { NavComponent } from './shared/navbar.component';
-import { LogoComponent } from './shared/logo.component';
-
-
-
-import { ErrorComponent } from './error/error.component';
-import { AppRoutingModule } from './shared/app.routing';
-import { CompanyListComponent } from './companies/company-list.component';
-
-import { AdminModule } from './admin/admin.module';
+import { OidcConfigService } from './auth/services/oidc.security.config.service';
+import { AuthWellKnownEndpoints } from './auth/models/auth.well-known-endpoints';
 
 
 
