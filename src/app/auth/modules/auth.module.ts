@@ -1,3 +1,4 @@
+import { ArrayHelperService } from '../services/oidc-array-helper.service';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 
 import { OidcSecurityService } from '../services/oidc.security.service';
@@ -11,7 +12,8 @@ import {
     OidcSecurityStorage,
     BrowserStorage
 } from '../services/oidc.security.storage';
-import { AuthWellKnownEndpoints } from '../services/auth.well-known-endpoints';
+import { AuthWellKnownEndpoints } from '../models/auth.well-known-endpoints';
+import { LoggerService } from '../services/oidc.logger.service';
 
 @NgModule()
 export class AuthModule {
@@ -19,6 +21,7 @@ export class AuthModule {
         return {
             ngModule: AuthModule,
             providers: [
+                OidcConfigService,
                 OidcSecurityService,
                 OidcSecurityValidation,
                 OidcSecurityCheckSession,
@@ -26,8 +29,13 @@ export class AuthModule {
                 OidcSecurityUserService,
                 OidcSecurityCommon,
                 AuthConfiguration,
+                TokenHelperService,
+                LoggerService,
                 DefaultConfiguration,
+                ArrayHelperService,
                 AuthWellKnownEndpoints,
+                OidcDataService,
+                StateValidationService,
                 {
                     provide: OidcSecurityStorage,
                     useClass: token.storage || BrowserStorage
