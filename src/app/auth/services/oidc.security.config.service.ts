@@ -1,9 +1,8 @@
 import { Injectable, EventEmitter, Output } from '@angular/core';
 
 @Injectable()
-export class OdcConfigService {
+export class OidcConfigService {
     @Output() onConfigurationLoaded = new EventEmitter<boolean>();
-    clientConfigurationLoaded: any;
     clientConfiguration: any;
     wellKnownEndpoints: any;
 
