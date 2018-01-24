@@ -1,12 +1,12 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
 import { Inject, PLATFORM_ID } from '@angular/core';
-import { Injectable, EventEmitter, Output } from "@angular/core";
+import { EventEmitter, Injectable, Output } from "@angular/core";
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { timer } from 'rxjs/observable/timer';
-import { pluck, take, catchError, timeInterval } from 'rxjs/operators';
+import { catchError, pluck, take, timeInterval } from 'rxjs/operators';
 
 import { AuthorizationResult } from '../models/authorization-result.enum';
 import { JwtKeys } from '../models/jwtkeys';
@@ -15,7 +15,6 @@ import {
     AuthConfiguration, 
     OpenIDImplicitFlowConfiguration  
 } from '../modules/auth.configuration';
-import { AuthWellKnownEndpoints } from './auth.well-known-endpoints';
 import { StateValidationService } from './oidc-security-state-validation.service';
 import { OidcSecurityCheckSession } from './oidc.security.check-session';
 import { OidcSecurityCommon } from './oidc.security.common';
@@ -26,16 +25,17 @@ import { UriEncoder } from './uri-encoder';
 import { OidcDataService } from './oidc-data.service';
 import { TokenHelperService } from './oidc-token-helper.service';
 import { LoggerService } from './oidc.logger.service';
+import { AuthWellKnownEndpoints } from '../models/auth.well-known-endpoints';
 
 @Injectable()
 export class OidcSecurityService {
-    @Output() onModuleSetup = new EventEmitter<any>(true);
+    @Output() onModuleSetup = new EventEmitter<boolean>();
     @Output() onAuthorizationResult = new EventEmitter<AuthorizationResult>();
     @Output() onCheckSessionChanged = new EventEmitter<boolean>();
 
     checkSessionChanged: boolean;
     moduleSetup = false;
-
+    private authWellKnownEndpoints: AuthWellKnownEndpoints;
     private _isAuthorized = new BehaviorSubject<boolean>(false);
     private _isAuthorizedValue: boolean;   
 
@@ -55,20 +55,21 @@ export class OidcSecurityService {
         private oidcSecuritySilentRenew: OidcSecuritySilentRenew,
         private oidcSecurityUserService: OidcSecurityUserService,
         private oidcSecurityCommon: OidcSecurityCommon,
-        private authWellKnownEndpoints: AuthWellKnownEndpoints,
         private oidcSecurityValidation: OidcSecurityValidation,
         private tokenHelperService: TokenHelperService,
         private loggerService: LoggerService
     ) {}
 
     setupModule(
-        openIDImplicitFlowConfiguration: OpenIDImplicitFlowConfiguration
+        openIDImplicitFlowConfiguration: OpenIDImplicitFlowConfiguration,
+        authWellKnownEndpoints: AuthWellKnownEndpoints
     ): void {
+        this.authWellKnownEndpoints = Object.assign({}, authWellKnownEndpoints);
         this.authConfiguration.init(openIDImplicitFlowConfiguration);
+        this.stateValidationService.setupModule(authWellKnownEndpoints);
+        this.oidcSecurityCheckSession.setupModule(authWellKnownEndpoints);
+        this.oidcSecurityUserService.setupModule(authWellKnownEndpoints);        
         
-        
-        
-
         this.oidcSecurityCheckSession.onCheckSessionChanged.subscribe(() => {
             this.loggerService.logDebug('onCheckSessionChanged');
             this.checkSessionChanged = true;
