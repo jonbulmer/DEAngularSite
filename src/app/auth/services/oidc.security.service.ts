@@ -77,24 +77,30 @@ export class OidcSecurityService {
                 this.checkSessionChanged
             );
         });
-        this.authWellKnownEndpoints.onWellKnownEndpointsLoaded.subscribe(() => {
-            this.onWellKnownEndpointsLoaded();
-        });
+
         this._userData.subscribe(() => {
             this.onUserDataChanged();
-        });
+        });      
 
         const userData = this.oidcSecurityCommon.userData;
-        if (userData !== '') {
+        if (userData) {
             this.setUserData(userData);
         }
 
         const isAuthorized = this.oidcSecurityCommon.isAuthorized;
-        if (isAuthorized !== undefined) {
-            this.setIsAuthorized(isAuthorized);
-
-            // Start the silent renew
-            this.runTokenValidation();
+        if (isAuthorized) {
+            this.loggerService.logDebug('IsAuthorized setup module');
+            this.loggerService.logDebug(this.oidcSecurityCommon.idToken);
+            if (this.oidcSecurityValidation.isTokenExpired(
+                    this.oidcSecurityCommon.idToken,
+                    this.authConfiguration.silent_renew_offset_in_seconds)
+            ) {
+                this.loggerService.logDebug('IsAuthorized setup module; id_token isTokenExpired');
+            } else {
+                this.loggerService.logDebug('IsAuthorized setup module; id_token is valid');
+                this.setIsAuthorized(isAuthorized);
+                this.runTokenValidation();
+            }
         }
 
         this.loggerService.logDebug(
@@ -103,29 +109,23 @@ export class OidcSecurityService {
 
         if (isPlatformBrowser(this.platformId)) {
             // Client only code.
-            this.authWellKnownEndpoints.onWellKnownEndpointsLoaded.subscribe(
-                () => {
-                    this.moduleSetup = true;
-                    this.onModuleSetup.emit();
+            this.moduleSetup = true;
+            this.onModuleSetup.emit();
 
-                    if (this.authConfiguration.silent_renew) {
-                        this.oidcSecuritySilentRenew.initRenew();
-                    }
+            if (this.authConfiguration.silent_renew) {
+                this.oidcSecuritySilentRenew.initRenew();
+            }
 
-                    if (
-                        this.authConfiguration.start_checksession && 
-                        !this.oidcSecurityCheckSession.doesSessionExist()
-                    ) {
-                        this.oidcSecurityCheckSession.init().subscribe(() => {
-                            this.oidcSecurityCheckSession.pollServerSession(
-                                this.authConfiguration.client_id
-                            );
-                        });
-                    }
-                }
-            );
-
-            this.authWellKnownEndpoints.setupModule();
+            if (
+                this.authConfiguration.start_checksession && 
+                !this.oidcSecurityCheckSession.doesSessionExist()
+            ) {
+                this.oidcSecurityCheckSession.init().subscribe(() => {
+                    this.oidcSecurityCheckSession.pollServerSession(
+                        this.authConfiguration.client_id
+                    );
+                });
+            }
         } else {
             this.moduleSetup = true;
             this.onModuleSetup.emit();
@@ -178,8 +178,7 @@ export class OidcSecurityService {
     }    
 
     authorize() {
-        const data = this.oidcSecurityCommon.wellKnownEndpoints;
-        if (data) {
+        if (this.authWellKnownEndpoints) {
             this.authWellKnownEndpointsLoaded = true;
         }    
 
@@ -279,7 +278,7 @@ export class OidcSecurityService {
                         if (!this.authConfiguration.trigger_authorization_result_event && !isRenewProcess) {
                             this.router.navigate([
                                 this.authConfiguration.unauthorized_route
-                            ])
+                            ]);
                         }
                     }
                 });
