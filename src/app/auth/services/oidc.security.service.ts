@@ -605,11 +605,6 @@ logoff() {
         }
     }
 
-    private onWellKnownEndpointsLoaded() {
-        this.loggerService.logDebug('onWellKnownEndpointsLoaded');
-        this.authWellKnownEndpointsLoaded = true;
-    }
-
     private onUserDataChanged() {
         this.loggerService.logDebug(
             `onUserDataChanged: last = ${this.lastUserData}, new = ${
