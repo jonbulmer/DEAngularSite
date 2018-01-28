@@ -12,6 +12,13 @@ import { SecureFileService } from './admin/securefile/SecureFileService';
 
 import { ForbiddenComponent } from './admin/forbidden/forbidden.component';
 import { HomeComponent } from  './home/home.component';
+import { NavComponent } from './shared/navbar.component';
+import { LogoComponent } from './shared/logo.component';
+import { ErrorComponent } from './error/error.component';
+import { AppRoutingModule } from './shared/app.routing';
+import { CompanyListComponent } from './companies/company-list.component';
+import { AdminModule } from './admin/admin.module';
+
 import { UnauthorizedComponent } from './admin/unauthorized/unauthorized.component';
 import { SecureFilesComponent } from './admin/securefile/securefiles.component';
 
@@ -28,7 +35,10 @@ import { OidcConfigService } from './auth/services/oidc.security.config.service'
 import { AuthWellKnownEndpoints } from './auth/models/auth.well-known-endpoints';
 
 
-
+export function loadConfig(oidcConfigService: OidcConfigService) {
+    console.log('APP_INITIALIZER STARTING');
+    return () => oidcConfigService.load(`${window.location.origin}/api/ClientAppSettings`);
+}
 
 
 
@@ -99,7 +109,10 @@ export class AppModule {
             configuration.FileServer = this.clientConfiguration.apiFileServer;
             configuration.Server = this.clientConfiguration.apiServer;
 
-            this.oidcSecurityService.setupModule(openIDImplicitFlowConfiguration);
+            const authWellKnownEndpoints = new AuthWellKnownEndpoints();
+            authWellKnownEndpoints.setWellKnownEndpoints(this.oidcConfigService.wellKnownEndpoints);
+
+            this.oidcSecurityService.setupModule(openIDImplicitFlowConfiguration, authWellKnownEndpoints);
         });
 
 
