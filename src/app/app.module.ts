@@ -6,7 +6,7 @@ import { AppComponent } from './start/app.component';
 import { Configuration } from './app.constants';
 import { routing } from './admin/admin.routes';
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { SecureFileService } from './admin/securefile/SecureFileService';
 
@@ -29,7 +29,7 @@ import { OpenIDImplicitFlowConfiguration } from './auth/modules/auth.configurati
 import { DataEventRecordsModule } from './admin/dataeventrecords/dataeventrecords.module';
 
 import { AuthorizationGuard } from './admin/authorization.guard';
-import { AuthorizationCanGuard } from './authorization.can.guard';
+import { AuthorizationCanGuard } from './admin/authorization.can.guard';
 
 import { OidcConfigService } from './auth/services/oidc.security.config.service';
 import { AuthWellKnownEndpoints } from './auth/models/auth.well-known-endpoints';
