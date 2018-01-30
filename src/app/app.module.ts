@@ -28,8 +28,8 @@ import { OpenIDImplicitFlowConfiguration } from './auth/modules/auth.configurati
 
 import { DataEventRecordsModule } from './admin/dataeventrecords/dataeventrecords.module';
 
-import { AuthorizationGuard } from './admin/authorization.guard';
-import { AuthorizationCanGuard } from './admin/authorization.can.guard';
+import { AuthorizationGuard } from './auth/authorization.guard';
+import { AuthorizationCanGuard } from './auth/authorization.can.guard';
 
 import { OidcConfigService } from './auth/services/oidc.security.config.service';
 import { AuthWellKnownEndpoints } from './auth/models/auth.well-known-endpoints';
