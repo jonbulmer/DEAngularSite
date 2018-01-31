@@ -12,8 +12,22 @@ export class AuthorizationRouteSnaphot implements CanActivate {
         private router: Router,
         private oidcSecurityService: OidcSecurityService
     ) { }
+
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | boolean {
-        return this.oidcSecurityService.getIsAuthorized().pipe()
-        return false;
+        console.log(route + '' + state);
+        console.log('AuthorizationGuard, canActivate');
+
+        return this.oidcSecurityService.getIsAuthorized().pipe(
+            map((isAuthorized: boolean) => {
+                console.log('AuthorizationGuard, canActivate isAuthorized:' + isAuthorized);
+
+                if (isAuthorized) {
+                    return true;
+                }
+
+                this.router.navigate(['/unauthorized']);
+                return false;
+            })
+        );
     }
 }
