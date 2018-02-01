@@ -6,8 +6,8 @@ import { map } from 'rxjs/operators';
 import { OidcSecurityService } from './services/oidc.security.service';
 
 @Injectable()
-export class AuthorizationRouteSnaphot implements CanActivate {
-
+export class AuthorizationGuard implements CanActivate {
+            
     constructor(
         private router: Router,
         private oidcSecurityService: OidcSecurityService

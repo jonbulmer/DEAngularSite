@@ -75,13 +75,12 @@ export class AppModule {
 
     constructor(
         public oidcSecurityService: OidcSecurityService,
-        private http: HttpClient,
+        private oidcConfigService: OidcConfigService,
         configuration: Configuration
     ) {
-        this.configClient().subscribe((config: any) => {
-            this.clientConfiguration = config;
+        this.oidcConfigService.onConfigurationLoaded.subscribe(() => {
+            
             const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
-
             openIDImplicitFlowConfiguration.stsServer = this.clientConfiguration.stsServer;
             openIDImplicitFlowConfiguration.redirect_url = this.clientConfiguration.redirect_url;
             // The Client MUST validate that the aud (audience) Claim contains its client_id value registered at the Issuer
@@ -110,17 +109,13 @@ export class AppModule {
             configuration.Server = this.clientConfiguration.apiServer;
 
             const authWellKnownEndpoints = new AuthWellKnownEndpoints();
-            authWellKnownEndpoints.setWellKnownEndpoints(this.oidcConfigService.wellKnownEndpoints);
-
+            
             this.oidcSecurityService.setupModule(openIDImplicitFlowConfiguration, authWellKnownEndpoints);
         });
 
 
     }
     configClient() {
-        console.log('window.location', window.location);
-        console.log('window.location.href', window.location.href);
-        console.log('window.location.origin', window.location.origin);
-        return this.http.get(`${window.location.origin}/api/ClientAppSettings`);
+        console.log('App STARTING');
     }
  }
