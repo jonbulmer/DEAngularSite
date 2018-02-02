@@ -3,8 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
-// refenced oidc.security.user-service, auth.well-known-endpoints 
-// oidc.security.service
+// refenced oidc.security.user-service
+// oidc.security.service the error is on provider for OidcDataService
 export class OidcDataService {
     constructor(private httpClient: HttpClient) {}
 
