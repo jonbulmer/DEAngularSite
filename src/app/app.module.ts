@@ -25,6 +25,8 @@ import { SecureFilesComponent } from './admin/securefile/securefiles.component';
 import { AuthModule } from './auth/modules/auth.module';
 import { OidcSecurityService } from '../app/auth/services/oidc.security.service';
 import { OpenIDImplicitFlowConfiguration } from './auth/modules/auth.configuration';
+import { OidcDataService } from '../app/auth/services/oidc-data.service';
+import { StateValidationService } from '../app/auth/services/oidc-security-state-validation.service';
 
 import { DataEventRecordsModule } from './admin/dataeventrecords/dataeventrecords.module';
 
@@ -49,7 +51,9 @@ export function loadConfig(oidcConfigService: OidcConfigService) {
         routing,
         HttpClientModule,
         AdminModule,
-        AppRoutingModule
+        AppRoutingModule,
+        DataEventRecordsModule,
+        AuthModule.forRoot(),
     ],
     declarations: [
         AppComponent,
@@ -75,9 +79,10 @@ export class AppModule {
 
     constructor(
         public oidcSecurityService: OidcSecurityService,
-        private oidcConfigService: OidcConfigService,
-        configuration: Configuration
+        //private oidcConfigService: OidcConfigService,
+       // configuration: Configuration
     ) {
+        /*
         this.oidcConfigService.onConfigurationLoaded.subscribe(() => {
             
             const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
@@ -112,7 +117,7 @@ export class AppModule {
             
             this.oidcSecurityService.setupModule(openIDImplicitFlowConfiguration, authWellKnownEndpoints);
         });
-
+*/
 
     }
     configClient() {
