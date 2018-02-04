@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/catch';
@@ -11,10 +11,10 @@ import { ICompany } from './company';
 export class CompanyService {
     //private _companyUrl = 'src/api/company/company.json';
     private _companyUrl = 'https://diamondedge-api.co.uk/api/companies';
-    constructor(private _http: Http) { }
+    constructor(private _httpClient: HttpClient) { }
 
     getCompanies(): Observable<ICompany[]> {
-        return this._http.get(this._companyUrl)
+        return this._httpClient.get(this._companyUrl)
         .map((response: Response) => <ICompany[]> response.json())
         .do(data => console.log('All: ' + JSON.stringify(data) ))
         .catch(this.handleError);  
