@@ -6,6 +6,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 import { ICompany } from './company';
+import { HttpErrorResponse } from '@angular/common/http/src/response';
 
 @Injectable() 
 export class CompanyService {
@@ -14,10 +15,7 @@ export class CompanyService {
     constructor(private _httpClient: HttpClient) { }
 
     getCompanies(): Observable<ICompany[]> {
-        return this._httpClient.get(this._companyUrl)
-        .map((response: Response) => <ICompany[]> response.json())
-        .do(data => console.log('All: ' + JSON.stringify(data) ))
-        .catch(this.handleError);  
+        return this._httpClient.get<ICompany[]>(this._companyUrl, options);  
     };
 
     getCompany(id: number): Observable<ICompany> {
@@ -25,8 +23,8 @@ export class CompanyService {
              .map((companies: ICompany[]) => companies.find(c => c.Id === id));
     }
 
-    private handleError(error: Response) {
+    private handleError(error: HttpErrorResponse) {
        console.error(error); 
-       return Observable.throw(error.json().error || 'Server error')
+       return Observable.throw(json().error || 'Server error')
     }
 }
