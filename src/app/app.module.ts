@@ -79,10 +79,10 @@ export class AppModule {
 
     constructor(
         public oidcSecurityService: OidcSecurityService,
-        //private oidcConfigService: OidcConfigService,
-       // configuration: Configuration
+        private oidcConfigService: OidcConfigService,
+        configuration: Configuration
     ) {
-        /*
+    
         this.oidcConfigService.onConfigurationLoaded.subscribe(() => {
             
             const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
@@ -117,7 +117,6 @@ export class AppModule {
             
             this.oidcSecurityService.setupModule(openIDImplicitFlowConfiguration, authWellKnownEndpoints);
         });
-*/
 
     }
     configClient() {
