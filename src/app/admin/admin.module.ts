@@ -5,21 +5,12 @@ import { RouterModule, Routes } from '@angular/router';
 
 
 import {AdminComponent} from './admin.component/admin.component';
-import {AdminMenuComponent} from './adminMenu/admin-menu.component';
-import {LoginComponent} from './login/login.component';
-import {SignUpComponent} from './signup/sign-up.component';
-
-import {UserService} from './adminShared/user.service';
 
 const AdminRoutes: Routes = [
     {
         path: 'admin',
         component: AdminComponent,
-        children: [
-            { path: 'login', component: LoginComponent },
-            { path: 'signup', component: SignUpComponent },
-            { path: '', component: AdminMenuComponent, canActivate: [UserService] }
-        ]
+        children: [ ]
     },
 ];
 
@@ -33,14 +24,9 @@ const AdminRoutes: Routes = [
         RouterModule
     ],
     declarations: [
-        AdminComponent,
-        AdminMenuComponent,
-        LoginComponent,
-        SignUpComponent
+        AdminComponent
     ],
-    providers: [
-        UserService,
-    ]
+    providers: []
 })
 
 export class AdminModule {}

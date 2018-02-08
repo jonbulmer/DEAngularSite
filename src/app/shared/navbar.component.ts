@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
                  <ul class="menu">
                   <li class="nav-menu"><a href="./companies">Companies</a></li> 
                   <li class="nav-menu"><a href="#">Home</a></li>
-                  <li class="nav-menu"><a [routerLink]="['/admin']">Admin Area</a></li>
+                  <li class="nav-menu"><a [routerLink]="['/admin']">Customer Area</a></li>
                  </ul>
                 </div>
               </div> 
