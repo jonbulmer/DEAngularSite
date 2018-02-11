@@ -67,7 +67,18 @@ export function loadConfig(oidcConfigService: OidcConfigService) {
         CompanyListComponent
     ],
     providers: [
+        OidcConfigService,
         OidcSecurityService,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: loadConfig,
+            deps: [OidcConfigService],
+            multi: true
+        },
+        OidcSecurityService,
+        AuthorizationGuard,
+        AuthorizationCanGuard,
+        SecureFileService,
         Configuration
     ],
     bootstrap: [ AppComponent ]
@@ -82,9 +93,9 @@ export class AppModule {
         private oidcConfigService: OidcConfigService,
         configuration: Configuration
     ) {
-    
+        
         this.oidcConfigService.onConfigurationLoaded.subscribe(() => {
-            
+            console.log('App a STARTING');
             const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
             openIDImplicitFlowConfiguration.stsServer = this.clientConfiguration.stsServer;
             openIDImplicitFlowConfiguration.redirect_url = this.clientConfiguration.redirect_url;

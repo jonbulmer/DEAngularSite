@@ -3,14 +3,16 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
-
+import {AdminMenuComponent} from './adminMenu/admin-menu.component';
 import {AdminComponent} from './admin.component/admin.component';
 
 const AdminRoutes: Routes = [
     {
         path: 'admin',
         component: AdminComponent,
-        children: [ ]
+        children: [
+            { path: '', component: AdminMenuComponent }
+         ]
     },
 ];
 
@@ -24,7 +26,8 @@ const AdminRoutes: Routes = [
         RouterModule
     ],
     declarations: [
-        AdminComponent
+        AdminComponent,
+        AdminMenuComponent
     ],
     providers: []
 })
