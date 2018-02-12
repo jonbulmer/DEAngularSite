@@ -5,13 +5,24 @@ export class OidcConfigService {
     @Output() onConfigurationLoaded = new EventEmitter<boolean>();
     clientConfiguration: any;
     wellKnownEndpoints: any;
-
-    constructor() {}
     
     async load(configUrl: string) {
-        const response = await fetch(configUrl);
-        this.clientConfiguration = await response.json()
-        await this.load_using_stsServer(this.clientConfiguration.stsServer);
+        try {
+            const response = await fetch(configUrl);
+            if (response.ok) {
+                throw new Error(response.statusText);
+            }
+
+            this.clientConfiguration = await response.json();
+            await this.load_using_stsServer(this.clientConfiguration.stsServer);
+        } catch (err) {
+            console.error(
+                `OidcConfigService 'load' threw an error on calling ${configUrl}`,
+            err
+          );
+        }
+        
+        
     }
 
     async load_using_stsServer(stsServer: string) {
