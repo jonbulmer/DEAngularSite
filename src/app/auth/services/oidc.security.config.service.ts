@@ -26,14 +26,39 @@ export class OidcConfigService {
     }
 
     async load_using_stsServer(stsServer: string) {
-        const response = await fetch(`${stsServer}/.well-known/openid-configuration`);
-        this.wellKnownEndpoints = await response.json()
-        this.onConfigurationLoaded.emit();
+        try {
+            const response = await fetch(
+                `${stsServer}/.well-known/openid-configuration`
+            );
+            if (!response.ok) {
+                throw new Error(response.statusText)
+            }
+            this.wellKnownEndpoints = await response.json()
+            this.onConfigurationLoaded.emit();
+        } catch (err) {
+            console.error(
+                `OidcConfigService 'load_using_stsServer' threw an error on calling ${stsServer}`,
+                err
+              );
+        }
+        
+      
     }
 
     async load_using_custom_stsServer(stsServer: string) {
-        const response = await fetch(stsServer);
-        this.wellKnownEndpoints = await response.json()
-        this.onConfigurationLoaded.emit();
+        try {
+            const response = await fetch(stsServer);
+
+            if(!response.ok) {
+                throw new Error(response.statusText);
+            }
+            this.wellKnownEndpoints = await response.json()
+            this.onConfigurationLoaded.emit();
+        } catch (err) {
+        console.error(
+          `OidcConfigService 'load_using_custom_stsServer' threw an error on calling ${stsServer}`,
+          err
+        );
+      }
     }
 }

@@ -17,6 +17,7 @@ import { LogoComponent } from './shared/logo.component';
 import { ErrorComponent } from './error/error.component';
 import { AppRoutingModule } from './shared/app.routing';
 import { CompanyListComponent } from './companies/company-list.component';
+import { NgZoneDemo } from './NgZone/NgZone';
 import { AdminModule } from './admin/admin.module';
 
 import { UnauthorizedComponent } from './admin/unauthorized/unauthorized.component';
@@ -64,7 +65,8 @@ export function loadConfig(oidcConfigService: OidcConfigService) {
         UnauthorizedComponent,
         SecureFilesComponent,
         ErrorComponent,
-        CompanyListComponent
+        CompanyListComponent,
+        NgZoneDemo
     ],
     providers: [
         OidcConfigService,
