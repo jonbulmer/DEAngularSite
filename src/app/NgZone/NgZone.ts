@@ -2,7 +2,7 @@ import {Component, NgZone} from '@angular/core';
 import {NgIf} from '@angular/common';
 
 @Component({
-  selector: 'logo-bar',
+  selector: 'router-outlet',
   template: `
     <h2>Demo: NgZone</h2>
 
