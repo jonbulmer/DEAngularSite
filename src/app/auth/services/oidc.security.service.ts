@@ -321,9 +321,9 @@ export class OidcSecurityService {
             }
         }
     }, (err) => {
-        /**/
+        /* Something when wrong while getting signing key */
         this.loggerService.logWarning(
-            '' + JSON.stringify(err)
+            'Failed to retrive signing key with error' + JSON.stringify(err)
         );
         this.oidcSecurityCommon.silentRenewRunning = '';
     });
