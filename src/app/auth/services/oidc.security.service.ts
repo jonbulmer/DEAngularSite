@@ -501,6 +501,18 @@ logoff() {
         }
     } 
 
+    startCheckingSilentRenew(): void {
+        this.runTokenValidation();
+    }
+
+    stopChckingSilentRenew(): void {
+        if (this._scheduledHeartBeat) {
+            clearTimeout(this._scheduledHeartBeat);
+            this._scheduledHeartBeat = null;
+            this.runTokenValidationRunning = false;
+        }
+    }
+
     private getValidatedStateResult(
         result: any,
         jwtKeys: JwtKeys
@@ -656,15 +668,12 @@ logoff() {
         }
         this.runTokenValidationRunning = true;
 
-        const source = timer(5000, 3000).pipe(
-            timeInterval(),
-            pluck('interval'),
-            take(10000)
-        );
+        /**
+            First time: delay 10 seconds to call silentRenewHeartBeatCheck
+            Afterwards: Run this check in a 5 second interval only AFTER the previous operation ends.
+         */
 
-        source.subscribe(
-            () => {
-                if (this._userData.value  && (this.oidcSecurityCommon.silentRenewRunning)  && this.getIdToken()) {
+        const silentRenewHeartBeatCheck = () => {
                     if (this.oidcSecurityValidation.isTokenExpired(
                             this.oidcSecurityCommon.idToken,
                             this.authConfiguration.silent_renew_offset_in_seconds
@@ -675,19 +684,21 @@ logoff() {
                         );
 
                         if (this.authConfiguration.silent_renew) {
-                            this.refreshSession();
+                            this.refreshSession().subscribe(() > {
+                                this._scheduledHeartBeat = setTimeout(silentRenewHeartBeatCheck, 3000);
+                            } (err: any) => {
+                                this.loggerService.logError('Error:' + err);
+                                this._scheduledHeartBeat = setTimeOut(silentRenewHeartBeatCheck, 3000);
+                            });
+                            return;
                         } else {
                             this.resetAuthorizationData(false);
                         }
                     }
                 }
-            },
-            (err: any) => {
-                this.loggerService.logError('Error: ' + err);
-            },
-            () => {
-                this.loggerService.logDebug('Completed');
-            }
-        );
+
+                this._scheduledHeartBeat = setTimeout(silentRenewheartBeatCheck, 3000);
+            };
+        });
     }
 }
