@@ -25,6 +25,7 @@ import { OidcDataService } from './oidc-data.service';
 import { TokenHelperService } from './oidc-token-helper.service';
 import { LoggerService } from './oidc.logger.service';
 import { AuthWellKnownEndpoints } from '../models/auth.well-known-endpoints';
+import { setTimeout } from 'core-js';
 
 @Injectable()
 export class OidcSecurityService {
@@ -447,32 +448,32 @@ logoff() {
     }
 }
 
-    refreshSession() {
-        this.loggerService.logDebug('BEGIN refresh session Authorize');
+refreshSession(): Observable<any> {
+    this.loggerService.logDebug('BEGIN refresh session Authorize');
 
-        let state = this.oidcSecurityCommon.authStateControl;
-        if (state === '' || state === null) {
-            state = Date.now() + '' + Math.random();
-            this.oidcSecurityCommon.authStateControl = state;
-        }
-
-        const nonce = 'N' + Math.random() + '' + Date.now();
-        this.oidcSecurityCommon.authNonce = nonce;
-        this.loggerService.logDebug(
-            'RefreshSession created. adding myautostate: ' +
-                this.oidcSecurityCommon.authStateControl
-        );
-
-        const url = this.createAuthorizeUrl(
-            nonce,
-            state,
-            this.authWellKnownEndpoints.authorization_endpoint,
-            'none'
-        );
-
-        this.oidcSecurityCommon.silentRenewRunning = 'running';
-        this.oidcSecuritySilentRenew.startRenew(url);
+    let state = this.oidcSecurityCommon.authStateControl;
+    if (state === '' || state === null) {
+        state = Date.now() + '' + Math.random();
+        this.oidcSecurityCommon.authStateControl = state;
     }
+
+    const nonce = 'N' + Math.random() + '' + Date.now();
+    this.oidcSecurityCommon.authNonce = nonce;
+    this.loggerService.logDebug(
+        'RefreshSession created. adding myautostate: ' +
+        this.oidcSecurityCommon.authStateControl
+    );
+
+    const url = this.createAuthorizeUrl(
+        nonce,
+        state,
+        this.authWellKnownEndpoints.authorization_endpoint,
+        'none'
+    );
+
+    this.oidcSecurityCommon.silentRenewRunning = 'running';
+    return this.oidcSecuritySilentRenew.startRenew(url);
+}
 
     handleError(error: any) {
         this.loggerService.logError(error);
@@ -672,33 +673,35 @@ logoff() {
             First time: delay 10 seconds to call silentRenewHeartBeatCheck
             Afterwards: Run this check in a 5 second interval only AFTER the previous operation ends.
          */
-
         const silentRenewHeartBeatCheck = () => {
-                    if (this.oidcSecurityValidation.isTokenExpired(
-                            this.oidcSecurityCommon.idToken,
-                            this.authConfiguration.silent_renew_offset_in_seconds
-                        )
-                    ) {
-                        this.loggerService.logDebug(
-                            'IsAuthorized: id_token isTokenExpired, start silent renew if active'
-                        );
-
-                        if (this.authConfiguration.silent_renew) {
-                            this.refreshSession().subscribe(() > {
-                                this._scheduledHeartBeat = setTimeout(silentRenewHeartBeatCheck, 3000);
-                            } (err: any) => {
-                                this.loggerService.logError('Error:' + err);
-                                this._scheduledHeartBeat = setTimeOut(silentRenewHeartBeatCheck, 3000);
-                            });
-                            return;
-                        } else {
-                            this.resetAuthorizationData(false);
-                        }
+            if (this._userData.value && (this.oidcSecurityCommon.silentRenewRunning !== 'running') &&this.getIdToken()) {
+                if (this.oidcSecurityValidation.isTokenExpired(
+                    this.oidcSecurityCommon.idToken,
+                    this.authConfiguration.silent_renew_offset_in_seconds)
+                ) {
+                    this.loggerService.logDebug(
+                    'IsAuthorized: id_token isTokenExpired, start silent renew if active');
+                
+                    if (this.authConfiguration.silent_renew) {
+                        this.refreshSession().subscribe(() => {
+                        this._scheduledHeartBeat = setTimeout(silentRenewHeartBeatCheck, 3000);
+                    }, (err: any) => {
+                        this.loggerService.logError('Error:' + err);
+                        this._scheduledHeartBeat = setTimeout(silentRenewHeartBeatCheck, 3000);
+                    });
+                    return;
+                    } else {
+                         this.resetAuthorizationData(false);
                     }
                 }
+            }
+            /* Delay 3 seconds and do the next check */           
+            this._scheduledHeartBeat = setTimeout(silentRenewHeartBeatCheck, 3000);
+        };
 
-                this._scheduledHeartBeat = setTimeout(silentRenewheartBeatCheck, 3000);
-            };
+        this.zone.runOutsideAngular(() => {
+            /* initial heartbeat check */
+            this._scheduledHeartBeat = setTimeout(silentRenewHeartBeatCheck,10000);
         });
     }
 }
