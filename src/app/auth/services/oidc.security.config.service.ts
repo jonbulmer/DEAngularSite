@@ -9,7 +9,7 @@ export class OidcConfigService {
     async load(configUrl: string) {
         try {
             const response = await fetch(configUrl);
-            if (response.ok) {
+            if (!response.ok) {
                 throw new Error(response.statusText);
             }
 
@@ -20,9 +20,8 @@ export class OidcConfigService {
                 `OidcConfigService 'load' threw an error on calling ${configUrl}`,
             err
           );
+          this.onConfigurationLoaded.emit(false);
         }
-        
-        
     }
 
     async load_using_stsServer(stsServer: string) {
@@ -33,16 +32,16 @@ export class OidcConfigService {
             if (!response.ok) {
                 throw new Error(response.statusText)
             }
+
             this.wellKnownEndpoints = await response.json()
-            this.onConfigurationLoaded.emit();
+            this.onConfigurationLoaded.emit(true);
         } catch (err) {
             console.error(
                 `OidcConfigService 'load_using_stsServer' threw an error on calling ${stsServer}`,
                 err
               );
+              this.onConfigurationLoaded.emit(false);
         }
-        
-      
     }
 
     async load_using_custom_stsServer(stsServer: string) {
@@ -53,12 +52,13 @@ export class OidcConfigService {
                 throw new Error(response.statusText);
             }
             this.wellKnownEndpoints = await response.json()
-            this.onConfigurationLoaded.emit();
+            this.onConfigurationLoaded.emit(true);
         } catch (err) {
         console.error(
           `OidcConfigService 'load_using_custom_stsServer' threw an error on calling ${stsServer}`,
           err
         );
+        this.onConfigurationLoaded.emit(false);
       }
     }
 }
