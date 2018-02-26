@@ -12,7 +12,8 @@ export class OidcConfigService {
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
-
+            // this is returned from the WEBAPI ClientAppSettings
+            console.log(response.statusText);  
             this.clientConfiguration = await response.json();
             await this.load_using_stsServer(this.clientConfiguration.stsServer);
         } catch (err) {
