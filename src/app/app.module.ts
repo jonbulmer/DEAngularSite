@@ -3,14 +3,14 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule }  from '@angular/platform-browser';
 
 import { AppComponent } from './start/app.component';
-import { routing } from './admin/admin.routes';
+//import { routing } from './admin/admin.routes';
 
 import { HttpClientModule } from '@angular/common/http';
 
-import { AuthModule } from './auth/modules/auth.module';
-import { ForbiddenComponent } from './admin/forbidden/forbidden.component';
-import { UnauthorizedComponent } from './admin/unauthorized/unauthorized.component';
-import { SecureFilesComponent } from './admin/securefile/securefiles.component';
+//import { AuthModule } from './auth/modules/auth.module';
+//import { ForbiddenComponent } from './admin/forbidden/forbidden.component';
+//import { UnauthorizedComponent } from './admin/unauthorized/unauthorized.component';
+//import { SecureFilesComponent } from './admin/securefile/securefiles.component';
 import { HomeComponent } from  './home/home.component';
 import { NavComponent } from './shared/navbar.component';
 import { LogoComponent } from './shared/logo.component';
@@ -28,17 +28,17 @@ export function loadConfig() {
     imports: [
         BrowserModule,
         FormsModule,
-        routing,
+        //routing,
         HttpClientModule,
-        AdminModule,
+        //AdminModule,
         AppRoutingModule,
-        AuthModule.forRoot(),
+        //AuthModule.forRoot(),
     ],
     declarations: [
         AppComponent,
-        ForbiddenComponent,
-        UnauthorizedComponent,
-        SecureFilesComponent,
+        //ForbiddenComponent,
+        //UnauthorizedComponent,
+        //SecureFilesComponent,
         NavComponent,
         LogoComponent,
         HomeComponent,
@@ -46,11 +46,11 @@ export function loadConfig() {
         CompanyListComponent
     ],
     providers: [
-        {
-            provide: APP_INITIALIZER,
-            useFactory: loadConfig,
-            multi: true
-        }
+       // {
+       //     provide: APP_INITIALIZER,
+       //     useFactory: loadConfig,
+       //     multi: true
+       // }
     ],
     bootstrap: [ AppComponent ],
 })
