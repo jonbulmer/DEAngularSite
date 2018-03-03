@@ -3,11 +3,9 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule }  from '@angular/platform-browser';
 
 import { AppComponent } from './start/app.component';
-//import { routing } from './admin/admin.routes';
 
 import { HttpClientModule } from '@angular/common/http';
 
-//import { AuthModule } from './auth/modules/auth.module';
 //import { ForbiddenComponent } from './admin/forbidden/forbidden.component';
 //import { UnauthorizedComponent } from './admin/unauthorized/unauthorized.component';
 //import { SecureFilesComponent } from './admin/securefile/securefiles.component';
@@ -19,16 +17,10 @@ import { AppRoutingModule } from './shared/app.routing';
 import { CompanyListComponent } from './companies/company-list.component';
 import { AdminModule } from './admin/admin.module';
 
-export function loadConfig() {
-    console.log('APP_INITIALIZER STARTING');
-    return  '';
-}
-
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
-        //routing,
         HttpClientModule,
         //AdminModule,
         AppRoutingModule,

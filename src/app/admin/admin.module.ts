@@ -6,6 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 import {AdminMenuComponent} from './adminMenu/admin-menu.component';
 import {AdminComponent} from './admin.component/admin.component';
 
+import { AuthModule } from '../auth/modules/auth.module';
+import { routing } from '../admin/admin.routes';
 import { SecureFileService } from '../admin/securefile/SecureFileService';
 import { ForbiddenComponent } from '../admin/forbidden/forbidden.component';
 import { UnauthorizedComponent } from '../admin/unauthorized/unauthorized.component';
@@ -44,7 +46,9 @@ const AdminRoutes: Routes = [
 @NgModule({
     imports: [
         CommonModule,
-        FormsModule,
+       // FormsModule,
+        routing,
+        DataEventRecordsModule,
         RouterModule.forChild(AdminRoutes)
     ],
     exports: [
@@ -52,7 +56,10 @@ const AdminRoutes: Routes = [
     ],
     declarations: [
         AdminComponent,
-        AdminMenuComponent
+        AdminMenuComponent,
+        ForbiddenComponent,
+        UnauthorizedComponent,
+        SecureFilesComponent,
     ],
     providers: [
         OidcConfigService,
@@ -79,8 +86,9 @@ export class AdminModule {
         private oidcConfigService: OidcConfigService,
         configuration: Configuration
     ) {
+        console.log('App a STARTING');
         this.oidcConfigService.onConfigurationLoaded.subscribe(() => {
-            console.log('App a STARTING');
+            
             const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();
             openIDImplicitFlowConfiguration.stsServer = this.clientConfiguration.stsServer;
             openIDImplicitFlowConfiguration.redirect_url = this.clientConfiguration.redirect_url;
