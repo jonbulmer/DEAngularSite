@@ -49,7 +49,8 @@ const AdminRoutes: Routes = [
        // FormsModule,
         routing,
         DataEventRecordsModule,
-        RouterModule.forChild(AdminRoutes)
+        RouterModule.forChild(AdminRoutes),
+        AuthModule.forRoot(),
     ],
     exports: [
         RouterModule
@@ -86,7 +87,7 @@ export class AdminModule {
         private oidcConfigService: OidcConfigService,
         configuration: Configuration
     ) {
-        console.log('App a STARTING');
+        console.log('App STARTING');
         this.oidcConfigService.onConfigurationLoaded.subscribe(() => {
             
             const openIDImplicitFlowConfiguration = new OpenIDImplicitFlowConfiguration();

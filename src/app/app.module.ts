@@ -22,9 +22,8 @@ import { AdminModule } from './admin/admin.module';
         BrowserModule,
         FormsModule,
         HttpClientModule,
-        //AdminModule,
+        AdminModule,
         AppRoutingModule,
-        //AuthModule.forRoot(),
     ],
     declarations: [
         AppComponent,
