@@ -12,8 +12,7 @@ export class OidcConfigService {
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
-            // this is returned from the WEBAPI ClientAppSettings
-            console.log(response.statusText);  
+            // this is returned from the WEBAPI ClientAppSettings  
             this.clientConfiguration = await response.json();
             await this.load_using_stsServer(this.clientConfiguration.stsServer);
         } catch (err) {
@@ -27,6 +26,7 @@ export class OidcConfigService {
 
     async load_using_stsServer(stsServer: string) {
         try {
+            console.log(stsServer);
             const response = await fetch(
                 `${stsServer}/.well-known/openid-configuration`
             );

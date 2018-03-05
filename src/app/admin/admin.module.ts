@@ -29,7 +29,8 @@ import { AuthWellKnownEndpoints } from '../auth/models/auth.well-known-endpoints
 
 export function loadConfig(oidcConfigService: OidcConfigService) {
     console.log('APP_INITIALIZER STARTING');
-    return () => oidcConfigService.load(`${window.location.origin}/api/ClientAppSettings`);
+    //return () => oidcConfigService.load(`${window.location.origin}/api/ClientAppSettings`);
+    return () => oidcConfigService.load(`${window.location.origin}/src/api/ClientAppSettings/ClientAppSettings.json`);
 }
 
 
