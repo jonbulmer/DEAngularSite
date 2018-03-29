@@ -19,6 +19,7 @@ export class DefaultConfiguration {
     start_checksession = false;
     silent_renew = true;
     silent_renew_offset_in_seconds = 0;
+    silent_redirect_url = 'https://localhost:44311';
     post_login_route = '/';
     // HTTP 403
     forbidden_route = '/forbidden';
@@ -50,6 +51,7 @@ export class OpenIDImplicitFlowConfiguration {
     start_checksession: boolean;
     silent_renew: boolean;
     silent_renew_offset_in_seconds: number;
+    silent_renew_url: string;
     post_login_route: string;
     forbidden_route: string;
     unauthorized_route: string;
@@ -79,6 +81,13 @@ export class AuthConfiguration {
         return (
             this.openIDImplicitFlowConfiguration.redirect_url ||
             this.defaultConfig.redirect_url
+        );
+    }
+
+    get silent_redirct_url(): string {
+        return (
+            this.openIDImplicitFlowConfiguration.silent_redirct_url ||
+            this.defaultConfig.silent_redirect_url
         );
     }
 
