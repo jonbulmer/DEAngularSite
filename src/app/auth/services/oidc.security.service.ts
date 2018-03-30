@@ -48,6 +48,8 @@ export class OidcSecurityService {
     
     private _scheduledHeartBeat: any;
     
+    private boundSilentRenewEvent: any;
+
     constructor(
         @Inject(PLATFORM_ID) private platformId: Object,
         private oidcDataService: OidcDataService,
@@ -118,6 +120,10 @@ export class OidcSecurityService {
 
             if (this.authConfiguration.silent_renew) {
                 this.oidcSecuritySilentRenew.initRenew();
+
+                // Suport authrization via DOM events.
+                this.boundSilentRenewEvent = this.silentRenewEventHandler.bind(this);
+                window.addEventListener('', this.boundSilentRenewEvent, false);
             }
 
             if (
@@ -220,6 +226,7 @@ export class OidcSecurityService {
         );
 
         const url = this.createAuthorizeUrl(
+            this.authConfiguration.silent_redirct_url,
             nonce,
             state,
             this.authWellKnownEndpoints.authorization_endpoint
@@ -465,6 +472,7 @@ refreshSession(): Observable<any> {
     );
 
     const url = this.createAuthorizeUrl(
+        this.authConfiguration.silent_redirect_url,
         nonce,
         state,
         this.authWellKnownEndpoints.authorization_endpoint,
@@ -550,6 +558,7 @@ refreshSession(): Observable<any> {
     }
 
     private createAuthorizeUrl(
+        redirect_url: string;
         nonce: string,
         state: string,
         authorization_endpoint: string,
@@ -564,7 +573,7 @@ refreshSession(): Observable<any> {
         params = params.set('client_id', this.authConfiguration.client_id);
         params = params.append(
             'redirect_uri',
-            this.authConfiguration.redirect_url
+            redirect_url
         );
         params = params.append(
             'response_type',
@@ -703,5 +712,10 @@ refreshSession(): Observable<any> {
             /* initial heartbeat check */
             this._scheduledHeartBeat = setTimeout(silentRenewHeartBeatCheck,10000);
         });
+    }
+
+    private silentRenewEventHandler(e: CustomEvent) {
+        this.loggerService.logDebug('silentRenewEventHandler');
+        this.authorizedCallback(e.detail);
     }
 }

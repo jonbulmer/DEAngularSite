@@ -105,7 +105,7 @@ export class AdminModule {
             openIDImplicitFlowConfiguration.start_checksession = this.clientConfiguration.start_checksession;
 
             openIDImplicitFlowConfiguration.silent_renew = this.clientConfiguration.silent_renew;
-            openIDImplicitFlowConfiguration.silent_renew_uri = 'https://localhost:44311/silent-renew.html';
+            openIDImplicitFlowConfiguration.silent_renew_url = 'https://localhost:44311/silent-renew.html';
 
 
             openIDImplicitFlowConfiguration.post_login_route = this.clientConfiguration.startup_route;

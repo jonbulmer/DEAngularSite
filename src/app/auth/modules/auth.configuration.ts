@@ -86,7 +86,7 @@ export class AuthConfiguration {
 
     get silent_redirct_url(): string {
         return (
-            this.openIDImplicitFlowConfiguration.silent_redirct_url ||
+            this.openIDImplicitFlowConfiguration.silent_renew_url ||
             this.defaultConfig.silent_redirect_url
         );
     }
