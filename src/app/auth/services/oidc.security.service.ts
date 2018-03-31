@@ -226,7 +226,7 @@ export class OidcSecurityService {
         );
 
         const url = this.createAuthorizeUrl(
-            this.authConfiguration.silent_redirct_url,
+            this.authConfiguration.silent_redirect_url,
             nonce,
             state,
             this.authWellKnownEndpoints.authorization_endpoint
@@ -558,7 +558,7 @@ refreshSession(): Observable<any> {
     }
 
     private createAuthorizeUrl(
-        redirect_url: string;
+        redirect_url: string,
         nonce: string,
         state: string,
         authorization_endpoint: string,
